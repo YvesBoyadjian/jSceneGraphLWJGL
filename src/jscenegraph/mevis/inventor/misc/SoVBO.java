@@ -164,7 +164,7 @@ public void clearData()
 
 public void copyAndSwapPackedRGBA( int numValues, final IntBuffer values, int nodeId, SoState state )
 {
-  allocateData(numValues * Integer.SIZE/Byte.SIZE, nodeId, state);
+  allocateData((int)(numValues * (long)Integer.SIZE/Byte.SIZE), nodeId, state);
 
   _hasSwappedRGBAData = true;
 

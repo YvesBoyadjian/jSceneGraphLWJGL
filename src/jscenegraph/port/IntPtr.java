@@ -17,7 +17,7 @@ public class IntPtr {
 	private int intOffset;
 	
 	public IntPtr(int size) {
-		int capacity = size*Integer.SIZE/Byte.SIZE;
+		int capacity = (int)(size*(long)Integer.SIZE/Byte.SIZE);
 		buffer = Buffers.newDirectByteBuffer(capacity);
 	}
 
@@ -32,7 +32,7 @@ public class IntPtr {
 	}
 
 	public IntPtr(int[] indices) {
-		int capacity = indices.length*Integer.SIZE/Byte.SIZE;
+		int capacity = (int)(indices.length*(long)Integer.SIZE/Byte.SIZE);
 		buffer = Buffers.newDirectByteBuffer(capacity);
 		buffer.asIntBuffer().put(indices);
 	}

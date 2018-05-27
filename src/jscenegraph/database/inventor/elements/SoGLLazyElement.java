@@ -2138,7 +2138,7 @@ public void updateColorVBO( SoState state, SoVBO vbo )
     maxId = ivState.transpNodeId;
   }
   if (vbo.getDataId()!=maxId) {
-    vbo.setData(ivState.numDiffuseColors * Integer.SIZE/Byte.SIZE, Util.toByteBuffer(ivState.packedColors), maxId, state);
+    vbo.setData((int)(ivState.numDiffuseColors * (long)Integer.SIZE/Byte.SIZE), Util.toByteBuffer(ivState.packedColors), maxId, state);
   }
 }
 

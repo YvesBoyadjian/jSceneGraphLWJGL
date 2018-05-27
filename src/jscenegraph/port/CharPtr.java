@@ -41,7 +41,7 @@ public class CharPtr {
 	}
 	
 	public int getByteOffset() {
-		return floatOffset*Float.SIZE/Byte.SIZE;
+		return (int)(floatOffset*(long)Float.SIZE/Byte.SIZE);
 	}
 	
 	public int getFloatOffset() {

@@ -474,7 +474,7 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
       if (vpCache.colorIsInVtxProp()) {
         if (vertexProperty.getValue().getNodeId() != vbo.getDataId()) {
           // take colors from vertex property
-          vbo.setData(vpCache.getNumColors() * Integer.SIZE /Byte.SIZE, vpCache.getColors(0), vertexProperty.getValue().getNodeId(), state);
+          vbo.setData((int)(vpCache.getNumColors() * (long)Integer.SIZE /Byte.SIZE), vpCache.getColors(0), vertexProperty.getValue().getNodeId(), state);
         }
       } else {
         // take colors from state      

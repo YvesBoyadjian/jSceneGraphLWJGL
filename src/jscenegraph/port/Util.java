@@ -41,7 +41,7 @@ public class Util {
 	 */
 	public static ByteBuffer toByteBuffer(Integer[] objArray) {
 		int arrayLength = objArray.length;
-		int nbBytes = arrayLength * Integer.SIZE / Byte.SIZE;
+		int nbBytes = (int)(arrayLength * (long)Integer.SIZE / Byte.SIZE);
 		ByteBuffer retVal = Buffers.newDirectByteBuffer(nbBytes);
 		for(int i=0; i< arrayLength;i++) {
 			int value = objArray[i];
@@ -53,7 +53,7 @@ public class Util {
 
 	public static ByteBuffer toByteBuffer(SbVec4f[] objArray) {
 		int arrayLength = objArray.length;
-		int nbBytes = arrayLength * 4 * Float.SIZE / Byte.SIZE;
+		int nbBytes = (int)(arrayLength * 4 * (long)Float.SIZE / Byte.SIZE);
 		ByteBuffer retVal = Buffers.newDirectByteBuffer(nbBytes);
 		for(int i=0; i< arrayLength;i++) {
 			float[] value = objArray[i].getValue();
@@ -68,7 +68,7 @@ public class Util {
 
 	public static ByteBuffer toByteBuffer(SbVec3f[] objArray) {
 		int arrayLength = objArray.length;
-		int nbBytes = arrayLength * 3 * Float.SIZE / Byte.SIZE;
+		int nbBytes = (int)(arrayLength * 3 * (long)Float.SIZE / Byte.SIZE);
 		ByteBuffer retVal = Buffers.newDirectByteBuffer(nbBytes);
 		for(int i=0; i< arrayLength;i++) {
 			float[] value = objArray[i].getValue();
@@ -82,7 +82,7 @@ public class Util {
 
 	public static ByteBuffer toByteBuffer(SbVec2f[] objArray) {
 		int arrayLength = objArray.length;
-		int nbBytes = arrayLength * 2 * Float.SIZE / Byte.SIZE;
+		int nbBytes = (int)(arrayLength * 2 * (long)Float.SIZE / Byte.SIZE);
 		ByteBuffer retVal = Buffers.newDirectByteBuffer(nbBytes);
 		for(int i=0; i< arrayLength;i++) {
 			float[] value = objArray[i].getValue();

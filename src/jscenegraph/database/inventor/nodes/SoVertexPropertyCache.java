@@ -532,25 +532,25 @@ public class SoVertexPropertyCache {
 
   public    Buffer getVertices(int i) 
         {
-	  	int offset = vertexStride*i/(Float.SIZE/Byte.SIZE);
+	  	int offset = (int)((long)vertexStride*i/(Float.SIZE/Byte.SIZE));
 	  	int length = vertexPtr.length - offset;
 	  	return Buffers.copyFloatBuffer(FloatBuffer.wrap(vertexPtr, offset, length));
 	  }
   public    Buffer getNormals(int i)  
         { 
-	  	int offset = normalStride*i/(Float.SIZE/Byte.SIZE);
+	  	int offset = (int)((long)normalStride*i/(Float.SIZE/Byte.SIZE));
 	  	int length = normalPtr.length - offset;
 	  	return Buffers.copyFloatBuffer(FloatBuffer.wrap(normalPtr, offset, length));
 	  }
   public   Buffer getColors(int i) 
         { 
-	  	int offset = colorStride*i/(Integer.SIZE/Byte.SIZE);
+	  	int offset = (int)((long)colorStride*i/(Integer.SIZE/Byte.SIZE));
 	  	int length = colorPtr.length - offset;
 	  	return Buffers.copyIntBuffer(IntBuffer.wrap(Util.toIntArray(colorPtr), offset, length));
 	  }
   public   Buffer getTexCoords(int i) 
         { 
-	  	int offset = texCoordStride*i/(Float.SIZE/Byte.SIZE);
+	  	int offset = (int)((long)texCoordStride*i/(Float.SIZE/Byte.SIZE));
 	  	int length = texCoordPtr.length - offset;
 	  	return Buffers.copyFloatBuffer(FloatBuffer.wrap(texCoordPtr, offset, length));
 	  }
