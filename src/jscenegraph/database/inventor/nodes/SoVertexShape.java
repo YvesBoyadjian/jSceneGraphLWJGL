@@ -407,7 +407,7 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
 
   boolean vboBound = false;
   { // Vertices:
-    FloatBuffer dataPtr = (FloatBuffer)vpCache.getVertices(0);
+    FloatBuffer dataPtr;// = (FloatBuffer)vpCache.getVertices(0); java port
     SoVBO vbo = vboElement.getVBO(SoGLVBOElement.VBOType.VERTEX_VBO);
     if (vbo != null && shouldUseVBO) {
       if (vbo.bind(state)) {
@@ -416,6 +416,12 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
         vboBound = true;
         dataPtr = null;
       }
+      else {
+      	dataPtr = (FloatBuffer)vpCache.getVertices(0);    	  
+      }
+    }
+    else {
+    	dataPtr = (FloatBuffer)vpCache.getVertices(0);
     }
     if (useVertexAttributes) {
         gl2.glVertexAttribPointer(SoLazyElement.VertexAttribs.ATTRIB_VERTEX.getValue(), (vpCache.getVertexStride() == (SbVec3f.sizeof()))?3:4, GL_FLOAT,false, 0, dataPtr);
@@ -434,7 +440,7 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
   // Normals:
   boolean perVertexNormals = vpCache.getNumNormals()>0 && (vpCache.getNormalBinding() == SoNormalBindingElement.Binding.PER_VERTEX_INDEXED || vpCache.getNormalBinding() == SoNormalBindingElement.Binding.PER_VERTEX);
   if (perVertexNormals) {
-    FloatBuffer dataPtr = (FloatBuffer)vpCache.getNormals(0);
+    FloatBuffer dataPtr;//java port = (FloatBuffer)vpCache.getNormals(0);
     SoVBO vbo = vboElement.getVBO(SoGLVBOElement.VBOType.NORMAL_VBO);
     if (vbo != null && shouldUseVBO) {
       if (vbo.bind(state)) {
@@ -443,7 +449,11 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
         vboBound = true;
         dataPtr = null;
       }
+      else {
+    	  dataPtr = (FloatBuffer)vpCache.getNormals(0);
+      }
     } else {
+    	dataPtr = (FloatBuffer)vpCache.getNormals(0);
       if (vboBound) {
         gl2.glBindBuffer/*ARB*/(GL_ARRAY_BUFFER, 0);
         vboBound = false;

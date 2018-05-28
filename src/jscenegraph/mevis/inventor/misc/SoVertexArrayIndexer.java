@@ -41,6 +41,7 @@ import com.jogamp.opengl.GL2;
 
 import jscenegraph.database.inventor.elements.SoGLLazyElement;
 import jscenegraph.database.inventor.misc.SoState;
+import jscenegraph.port.Destroyable;
 import jscenegraph.port.IntArrayPtr;
 import jscenegraph.port.IntPtr;
 
@@ -57,7 +58,7 @@ import jscenegraph.port.IntPtr;
  * @author Yves Boyadjian
  *
  */
-public class SoVertexArrayIndexer {
+public class SoVertexArrayIndexer implements Destroyable {
 	
 private
   int _type;

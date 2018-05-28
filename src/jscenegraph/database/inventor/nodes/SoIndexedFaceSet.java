@@ -96,6 +96,7 @@ import jscenegraph.database.inventor.nodes.SoVertexPropertyCache.SoVPCacheFunc;
 import jscenegraph.mevis.inventor.elements.SoGLVBOElement;
 import jscenegraph.mevis.inventor.misc.SoVBO;
 import jscenegraph.mevis.inventor.misc.SoVertexArrayIndexer;
+import jscenegraph.port.Destroyable;
 
 /**
  * @author Yves Boyadjian
@@ -312,8 +313,8 @@ public void destructor()
 //
 ////////////////////////////////////////////////////////////////////////
 {
-  _triangleIndexer.destructor();
-  _quadIndexer.destructor();
+  Destroyable.delete(_triangleIndexer);
+  Destroyable.delete(_quadIndexer);
   super.destructor();
 }
 
