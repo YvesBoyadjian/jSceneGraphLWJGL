@@ -274,8 +274,8 @@ public class SoIndexedTriangleStripSet extends SoIndexedShape {
   int                         curMaterial = -1, curNormal = -1;
   int                         curTexCoord = -1;
   int                         numIndices;
-  Integer[]                       coordIndices, matlIndices;
-  Integer[]                       normIndices, texCoordIndices;
+  int[]                       coordIndices, matlIndices;
+  int[]                       normIndices, texCoordIndices;
   Binding                     materialBinding, normalBinding;
   boolean                        texCoordsIndexed;
 
@@ -288,10 +288,10 @@ public class SoIndexedTriangleStripSet extends SoIndexedShape {
   curIndex = 0;
 
   numIndices      = coordIndex.getNum();
-  coordIndices    = coordIndex.getValues(0);
-  matlIndices     = materialIndex.getValues(0);
-  normIndices     = normalIndex.getValues(0);
-  texCoordIndices = textureCoordIndex.getValues(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
 
   // Check for special case of 1 index of SO_END_TRIANGLESTRIP_INDEX. This
   // means that coord indices are to be used for materials, normals,
@@ -325,7 +325,7 @@ public class SoIndexedTriangleStripSet extends SoIndexedShape {
     // Figure out how many vertices are in this strip:
     int vertsInStrip;
     for (vertsInStrip = 0; vertsInStrip+curIndex <
-      numIndices && coordIndex.operator_square_bracket(vertsInStrip+curIndex) !=
+      numIndices && coordIndex.operator_square_bracketI(vertsInStrip+curIndex) !=
       SO_END_STRIP_INDEX; vertsInStrip++);
 
     // Check to see whether to skip this strip due to 
@@ -614,19 +614,19 @@ private boolean figureNormals(SoState state, SoNormalBundle nb)
   int                 numNeeded = 0, i, numTris = 0, numV = 0;
   SoMFInt32     nIndices;
 
-  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracket(0) == SO_END_STRIP_INDEX)
+  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracketI(0) == SO_END_STRIP_INDEX)
     nIndices = coordIndex;
   else
     nIndices = normalIndex;
 
   // Find greatest index:
   for (i = 0; i < nIndices.getNum(); i++) {
-    if ((nIndices).operator_square_bracket(i) > numNeeded)
+    if ((nIndices).operator_square_bracketI(i) > numNeeded)
       numNeeded = (int) (nIndices).operator_square_bracket(i);
 
     // Count number of triangles, too.  numV counts how many
     // vertices we've got since the beginning of the strip:
-    if ((nIndices).operator_square_bracket(i) >= 0) {
+    if ((nIndices).operator_square_bracketI(i) >= 0) {
       ++numV;
       if (numV >= 3) ++numTris;
     }
@@ -718,12 +718,12 @@ public boolean generateDefaultNormals(SoState state,
 
     // Loop through all vertices of current triangleStrip
     while (curIndex < numIndices &&
-      coordIndex.operator_square_bracket(curIndex) != SO_END_STRIP_INDEX) {
+      coordIndex.operator_square_bracketI(curIndex) != SO_END_STRIP_INDEX) {
 
         if (ce != null)
           verts[whichVert%3] = ce.get3((int)coordIndex.operator_square_bracket(curIndex));
         else
-          verts[whichVert%3] = vpCoords[coordIndex.operator_square_bracket(curIndex)];
+          verts[whichVert%3] = vpCoords[coordIndex.operator_square_bracketI(curIndex)];
 
         ++numInStrip;
 
@@ -768,7 +768,7 @@ public boolean generateDefaultNormals(SoState state,
     int vertsInStrip;
     for (vertsInStrip = 0;
       vertsInStrip + curIndex < numIndices &&
-      coordIndex.operator_square_bracket(vertsInStrip + curIndex) != SO_END_STRIP_INDEX;
+      coordIndex.operator_square_bracketI(vertsInStrip + curIndex) != SO_END_STRIP_INDEX;
     vertsInStrip++)
       ;
 
@@ -974,11 +974,11 @@ private void  countStripsAndTris()
   numStrips = 0;
   int i, numVerts = 0;
   for(i = 0; i < coordIndex.getNum(); i++){
-    if (coordIndex.operator_square_bracket(i) == SO_END_STRIP_INDEX || 
+    if (coordIndex.operator_square_bracketI(i) == SO_END_STRIP_INDEX || 
       (i == coordIndex.getNum()-1)) {
         ++numStrips;
     } 
-    if (coordIndex.operator_square_bracket(i) != SO_END_STRIP_INDEX) {
+    if (coordIndex.operator_square_bracketI(i) != SO_END_STRIP_INDEX) {
       ++numVerts;
     }
   }
@@ -989,7 +989,7 @@ private void  countStripsAndTris()
   int ns = 0;
   int nv = 0;
   for(i = 0; i< coordIndex.getNum(); i++){
-    if (coordIndex.operator_square_bracket(i) == SO_END_STRIP_INDEX ){
+    if (coordIndex.operator_square_bracketI(i) == SO_END_STRIP_INDEX ){
       numVertices[ns] = nv;
       nv=0;
       ns++;               
@@ -1057,7 +1057,7 @@ private void OmOn (SoGLRenderAction action ) {
 	
     final int ns = numStrips;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
 	vpCache.sendNormal(gl2, (FloatBuffer)vpCache.getNormals(0)/*.asFloatBuffer()*/);
@@ -1094,7 +1094,7 @@ private void OmOnT (SoGLRenderAction action ) {
 	
     final int ns = numStrips;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
 	vpCache.sendNormal(gl2, (FloatBuffer)vpCache.getNormals(0)/*.asFloatBuffer()*/);
@@ -1104,7 +1104,7 @@ private void OmOnT (SoGLRenderAction action ) {
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    final Integer[] tCoordIndx = getTexCoordIndices();
+    final int[] tCoordIndx = getTexCoordIndices();
     int v;
     int vtxCtr = 0;
     int numvertsIndex = 0;
@@ -1141,14 +1141,14 @@ private void OmFn (SoGLRenderAction action) {
 	
     final int ns = numStrips;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     int nrmCtr=0;
     gl2.glShadeModel(GL2.GL_FLAT);
     int v;
@@ -1194,14 +1194,14 @@ public void OmVn (SoGLRenderAction action ) {
 	
     final int ns = numStrips;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     int v;
     int vtxCtr = 0;
     int numvertsIndex = 0; // java port
@@ -1239,18 +1239,18 @@ public void OmVnT
 	
     final int ns = numStrips;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
     int v;
     int vtxCtr = 0;
     int numvertsIndex = 0; // java port    

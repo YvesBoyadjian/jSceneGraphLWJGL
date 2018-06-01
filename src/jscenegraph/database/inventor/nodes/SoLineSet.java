@@ -286,7 +286,7 @@ computeBBox(SoAction action, final SbBox3f box, final SbVec3f center)
   // Count up total number of vertices used. If the last entry in
   // numVertices is SO_LINE_SET_USE_REST_OF_VERTICES, then we need
   // to use all of the vertices.
-  if (numVertices.operator_square_bracket(numLines - 1) == SO_LINE_SET_USE_REST_OF_VERTICES)
+  if (numVertices.operator_square_bracketI(numLines - 1) == SO_LINE_SET_USE_REST_OF_VERTICES)
     numVerts = -1;
 
   else
@@ -610,7 +610,7 @@ wouldGenerateNormals(SoState state)
       // Count up total number of vertices used. If the last entry in
       // numVertices is SO_LINE_SET_USE_REST_OF_VERTICES, then we need
       // to use all of the vertices.
-      if (numVertices.operator_square_bracket(numLines - 1) == SO_LINE_SET_USE_REST_OF_VERTICES)
+      if (numVertices.operator_square_bracketI(numLines - 1) == SO_LINE_SET_USE_REST_OF_VERTICES)
         numVerts =
         (int)(SoCoordinateElement.getInstance(state)).getNum();
       else for (int i = 0; i < numLines; i++)
@@ -674,12 +674,12 @@ GLRender(SoGLRenderAction action)
     boolean usingUSE_REST = false;
     boolean nvNotifyEnabled = true;
     int numPolylines = numVertices.getNum();
-    if (numPolylines != 0 && numVertices.operator_square_bracket(numPolylines-1) < 0) {
+    if (numPolylines != 0 && numVertices.operator_square_bracketI(numPolylines-1) < 0) {
       usingUSE_REST = true;
       nvNotifyEnabled = numVertices.enableNotify(false);
       totalNumVertices = 0;
       for (int i = 0; i < numPolylines-1; i++) 
-        totalNumVertices += numVertices.operator_square_bracket(i);
+        totalNumVertices += numVertices.operator_square_bracketI(i);
 
       numVertices.set1Value(numPolylines-1, 
         vpCache.numVerts - totalNumVertices - startIndex.getValue());
@@ -689,7 +689,7 @@ GLRender(SoGLRenderAction action)
     } else if (totalNumVertices < 0) {
       totalNumVertices = 0;
       for (int i = 0; i < numPolylines; i++) 
-        totalNumVertices += numVertices.operator_square_bracket(i);
+        totalNumVertices += numVertices.operator_square_bracketI(i);
     }           
 
     SoTextureCoordinateBundle tcb = null;
@@ -748,7 +748,7 @@ GLRender(SoGLRenderAction action)
     case PER_PART_INDEXED:
       {
         for (int i = 0; i < numPolylines; i++) 
-          numNormalsNeeded += numVertices.operator_square_bracket(i)-1;
+          numNormalsNeeded += numVertices.operator_square_bracketI(i)-1;
       }
       break;
     case PER_FACE:
@@ -782,7 +782,7 @@ GLRender(SoGLRenderAction action)
     case PER_PART_INDEXED:
       {
         for (int i = 0; i < numPolylines; i++) 
-          numColorsNeeded += numVertices.operator_square_bracket(i)-1;
+          numColorsNeeded += numVertices.operator_square_bracketI(i)-1;
       }
       break;
     case PER_FACE:
@@ -909,7 +909,7 @@ void GLRenderInternal( SoGLRenderAction  action, int useTexCoordsAnyway, SoShape
     boolean useVBO = beginVertexArrayRendering(action);
 
     int np = numVertices.getNum();
-    IntPtr numverts = new IntPtr(numVertices.getValuesInt(0));
+    IntPtr numverts = new IntPtr(numVertices.getValuesI(0));
     int mode = sendAdjacency.getValue()?GL3.GL_LINE_STRIP_ADJACENCY:GL2.GL_LINE_STRIP;
 
     int offset = startIndex.getValue();

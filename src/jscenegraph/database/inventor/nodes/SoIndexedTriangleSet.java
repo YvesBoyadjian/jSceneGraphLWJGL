@@ -431,10 +431,10 @@ generatePrimitives(SoAction action)
   texCoordsIndexed = areTexCoordsIndexed(action);
 
   numIndices      = coordIndex.getNum();
-  coordIndices    = coordIndex.getValuesInt(0);
-  matlIndices     = materialIndex.getValuesInt(0);
-  normIndices     = normalIndex.getValuesInt(0);
-  texCoordIndices = textureCoordIndex.getValuesInt(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
 
   // Check for special case of 1 index of SO_END_FACE_INDEX. This
   // means that coord indices are to be used for materials, normals,
@@ -591,10 +591,10 @@ createTriangleDetail(final SoRayPickAction action,
    int[]       coordIndices, matlIndices;
    int[]       normIndices, texCoordIndices;
 
-  coordIndices    = coordIndex.getValuesInt(0);
-  matlIndices     = materialIndex.getValuesInt(0);
-  normIndices     = normalIndex.getValuesInt(0);
-  texCoordIndices = textureCoordIndex.getValuesInt(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
   if (materialIndex.getNum() == 1 && matlIndices[0] == -1)
     matlIndices = coordIndices;
   if (normalIndex.getNum() == 1 && normIndices[0] == -1) 
@@ -784,16 +784,16 @@ figureNormals(SoState state, SoNormalBundle nb)
   int                 numNeeded = 0, i, numVertices = 0;
   SoMFInt32     nIndices;
 
-  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracket(0) == -1)
+  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracketI(0) == -1)
     nIndices = coordIndex;
   else
     nIndices = normalIndex;
 
   // Find greatest index:
   for (i = 0; i < nIndices.getNum(); i++) {
-    if ((nIndices).operator_square_bracket(i) > numNeeded)
+    if ((nIndices).operator_square_bracketI(i) > numNeeded)
       numNeeded = (int) (nIndices).operator_square_bracket(i);
-    if ((nIndices).operator_square_bracket(i) >= 0) // Count vertices
+    if ((nIndices).operator_square_bracketI(i) >= 0) // Count vertices
       ++numVertices;
   }
 
@@ -844,7 +844,7 @@ generateDefaultNormals(SoState state, SoNormalBundle nb)
       if (ce != null)
         nb.polygonVertex(ce.get3((int)coordIndex.operator_square_bracket(curIndex)));
       else
-        nb.polygonVertex(vpCoords[coordIndex.operator_square_bracket(curIndex)]);
+        nb.polygonVertex(vpCoords[coordIndex.operator_square_bracketI(curIndex)]);
 
       curIndex++;
     }
@@ -924,9 +924,9 @@ private void GLRenderInternal( final SoGLRenderAction action , int useTexCoordsA
     // VA rendering is only possible if there is a color VBO, since it manages the packed color swapping
     ((vpCache.getMaterialBinding() != SoMaterialBindingElement.Binding.PER_VERTEX_INDEXED) || SoGLVBOElement.getInstance(state).getVBO(SoGLVBOElement.VBOType.COLOR_VBO) != null) &&
     (vpCache.getNumTexCoords()==0 || (vpCache.getTexCoordBinding() == SoTextureCoordinateBindingElement.Binding.PER_VERTEX_INDEXED)) &&
-    (materialIndex.getNum()==1 && materialIndex.getValues(0)[0]==-1) && 
-    (normalIndex.getNum()==1 && normalIndex.getValues(0)[0]==-1) && 
-    (textureCoordIndex.getNum()==1 && textureCoordIndex.getValues(0)[0]==-1))
+    (materialIndex.getNum()==1 && materialIndex.getValuesI(0)[0]==-1) && 
+    (normalIndex.getNum()==1 && normalIndex.getValuesI(0)[0]==-1) && 
+    (textureCoordIndex.getNum()==1 && textureCoordIndex.getValuesI(0)[0]==-1))
   {
     fastPathTaken = true;
     if (numTris > 0) {
@@ -937,7 +937,7 @@ private void GLRenderInternal( final SoGLRenderAction action , int useTexCoordsA
       _triangleIndexer.setType(sendAdjacency.getValue()?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
 
       if (_triangleIndexer.getDataId()!=getNodeId()) {
-        _triangleIndexer.setIndices(coordIndex.getNum(), coordIndex.getValuesInt(0), getNodeId());
+        _triangleIndexer.setIndices(coordIndex.getNum(), coordIndex.getValuesI(0), getNodeId());
       }
       _triangleIndexer.render(state, useVBO);
 
@@ -974,7 +974,7 @@ void
 
 TriOmOn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1002,7 +1002,7 @@ void
 
 TriOmOnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1013,7 +1013,7 @@ TriOmOnT
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1037,7 +1037,7 @@ void
 
 TriOmFn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1045,7 +1045,7 @@ TriOmFn
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1067,7 +1067,7 @@ void
 
 TriOmFnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1075,11 +1075,11 @@ TriOmFnT
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1104,7 +1104,7 @@ void
 
 TriOmVn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1112,7 +1112,7 @@ TriOmVn
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1136,7 +1136,7 @@ void
 
 TriOmVnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1144,11 +1144,11 @@ TriOmVnT
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1175,7 +1175,7 @@ void
 
 TriFmOn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1186,7 +1186,7 @@ TriFmOn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1208,7 +1208,7 @@ void
 
 TriFmOnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1219,11 +1219,11 @@ TriFmOnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1248,7 +1248,7 @@ void
 
 TriFmFn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1256,11 +1256,11 @@ TriFmFn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1283,7 +1283,7 @@ void
 
 TriFmFnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1291,15 +1291,15 @@ TriFmFnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1325,7 +1325,7 @@ void
 
 TriFmVn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1333,11 +1333,11 @@ TriFmVn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1362,7 +1362,7 @@ void
 
 TriFmVnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1370,15 +1370,15 @@ TriFmVnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1406,7 +1406,7 @@ void
 
 TriVmOn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1417,7 +1417,7 @@ TriVmOn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1441,7 +1441,7 @@ void
 
 TriVmOnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1452,11 +1452,11 @@ TriVmOnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1483,7 +1483,7 @@ void
 
 TriVmFn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1491,11 +1491,11 @@ TriVmFn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1520,7 +1520,7 @@ void
 
 TriVmFnT
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1528,15 +1528,15 @@ TriVmFnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1564,7 +1564,7 @@ void
 
 TriVmVn
     (SoGLRenderAction action) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1572,11 +1572,11 @@ TriVmVn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1603,7 +1603,7 @@ private void
 
 TriVmVnT
     (SoGLRenderAction action ) { GL2 gl2 = action.getCacheContext();
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean sendAdj = sendAdjacency.getValue();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1611,15 +1611,15 @@ TriVmVnT
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     Buffer texCoordPtr = vpCache.getTexCoords(0);
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
-    Integer[] tCoordIndx = getTexCoordIndices();
+    int[] tCoordIndx = getTexCoordIndices();
 
     gl2.glBegin(sendAdj?GL3.GL_TRIANGLES_ADJACENCY:GL2.GL_TRIANGLES);
     int vtxCtr = 0;

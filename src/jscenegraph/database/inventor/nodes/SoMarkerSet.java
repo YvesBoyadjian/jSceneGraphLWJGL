@@ -1213,7 +1213,7 @@ GLRender(SoGLRenderAction action)
   for (int i = 0; i < numpts; i++) {
     int midx = Math.min(i, this.markerIndex.getNum() - 1);
 //#if COIN_DEBUG
-      if (midx < 0 || (this.markerIndex.operator_square_bracket(midx) >= markerlist.getLength())) {
+      if (midx < 0 || (this.markerIndex.operator_square_bracketI(midx) >= markerlist.getLength())) {
         // static boolean firsterror = true;
         if (firsterror) {
         	if(midx>= 0) {
@@ -1237,7 +1237,7 @@ GLRender(SoGLRenderAction action)
     SbVec3f point = new SbVec3f(coords.get3(idx));
     idx++;
 
-    if (this.markerIndex.operator_square_bracket(midx) == NONE) { continue; }
+    if (this.markerIndex.operator_square_bracketI(midx) == NONE) { continue; }
 
     // OpenGL's glBitmap() will not be clipped against anything but
     // the near and far planes. We want markers to also be clipped
@@ -1258,7 +1258,7 @@ GLRender(SoGLRenderAction action)
     // projected 3D position.  (FIXME: I haven't actually checked that
     // this is what TGS' implementation of the SoMarkerSet node does
     // when rendering, but it seems likely. 20010823 mortene.)
-    so_marker tmp = (markerlist).operator_square_bracket(this.markerIndex.operator_square_bracket(midx) );
+    so_marker tmp = (markerlist).operator_square_bracket(this.markerIndex.operator_square_bracketI(midx) );
     point.getValue()[0] = point.getValue()[0] - (tmp.width - 1) / 2;
     point.getValue()[1] = point.getValue()[1] - (tmp.height - 1) / 2;
 

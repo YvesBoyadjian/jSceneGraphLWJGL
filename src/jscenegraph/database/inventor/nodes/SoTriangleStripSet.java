@@ -271,7 +271,7 @@ public SoTriangleStripSet()
   int numStrips = (int) numVertices.getNum();
   int numVerts = 0;
 
-  if (numStrips != 0 && numVertices.operator_square_bracket(numStrips-1) < 0) {
+  if (numStrips != 0 && numVertices.operator_square_bracketI(numStrips-1) < 0) {
     numVerts = -1;
   } else for (int i = 0; i < numStrips; i++) {
     numVerts += (int) numVertices.operator_square_bracket(i);
@@ -315,12 +315,12 @@ public void GLRender(SoGLRenderAction action)
     boolean usingUSE_REST = false;
     boolean nvNotifyEnabled = true;
     int nstrips = numVertices.getNum();
-    if (nstrips != 0 && numVertices.operator_square_bracket(nstrips-1) < 0) {
+    if (nstrips != 0 && numVertices.operator_square_bracketI(nstrips-1) < 0) {
       usingUSE_REST = true;
       nvNotifyEnabled = numVertices.enableNotify(false);
       totalNumVertices = 0;
       for (int i = 0; i < nstrips-1; i++) 
-        totalNumVertices += numVertices.operator_square_bracket(i);
+        totalNumVertices += numVertices.operator_square_bracketI(i);
       numVertices.set1Value(nstrips-1, 
         vpCache.numVerts - totalNumVertices - startIndex.getValue());
       totalNumVertices = vpCache.numVerts - startIndex.getValue();
@@ -329,7 +329,7 @@ public void GLRender(SoGLRenderAction action)
     } else if (totalNumVertices < 0) {
       totalNumVertices = 0;
       for (int i = 0; i < nstrips; i++) 
-        totalNumVertices += numVertices.operator_square_bracket(i);
+        totalNumVertices += numVertices.operator_square_bracketI(i);
     }           
 
     if (vpCache.shouldGenerateNormals(shapeStyle)) {
@@ -343,7 +343,7 @@ public void GLRender(SoGLRenderAction action)
           int nstrips2 = numVertices.getNum();
           totalNumVertices = 0;
           for (int i = 0; i < nstrips2; i++) 
-            totalNumVertices += numVertices.operator_square_bracket(i);
+            totalNumVertices += numVertices.operator_square_bracketI(i);
         }           
 
         final SoNormalBundle nb = new SoNormalBundle(action, false);
@@ -414,7 +414,7 @@ public void GLRender(SoGLRenderAction action)
     case PER_FACE_INDEXED:
       {
         for (int i = 0; i < nstrips; i++) 
-          numNormalsNeeded += numVertices.operator_square_bracket(i)-2;
+          numNormalsNeeded += numVertices.operator_square_bracketI(i)-2;
       }
       break;
     case PER_PART:
@@ -448,7 +448,7 @@ public void GLRender(SoGLRenderAction action)
     case PER_FACE_INDEXED:
       {
         for (int i = 0; i < nstrips; i++) 
-          numColorsNeeded += numVertices.operator_square_bracket(i)-2;
+          numColorsNeeded += numVertices.operator_square_bracketI(i)-2;
       }
       break;
     case PER_PART:
@@ -596,7 +596,7 @@ public void GLRender(SoGLRenderAction action)
         int nstrips = numVertices.getNum();
         totalNumVertices = 0;
         for (int i = 0; i < nstrips; i++) 
-          totalNumVertices += numVertices.operator_square_bracket(i);
+          totalNumVertices += numVertices.operator_square_bracketI(i);
       }       
 
       final SoNormalBundle nb = new SoNormalBundle(action, false);
@@ -638,16 +638,16 @@ public void GLRender(SoGLRenderAction action)
   // many vertices there are every time:
   boolean usingUSE_REST = false;
   boolean nvNotifyEnabled = true;
-  if (numStrips != 0 && numVertices.operator_square_bracket(numStrips-1) < 0) {
+  if (numStrips != 0 && numVertices.operator_square_bracketI(numStrips-1) < 0) {
     usingUSE_REST = true;
     nvNotifyEnabled = numVertices.enableNotify(false);
     int nv = 0;
-    for (int i = 0; i < numStrips-1; i++) nv += numVertices.operator_square_bracket(i);
+    for (int i = 0; i < numStrips-1; i++) nv += numVertices.operator_square_bracketI(i);
     numVertices.set1Value(numStrips-1, ce.getNum() - nv);
   }       
 
   for (strip = 0; strip < numStrips; strip++) {
-    int vertsInStrip = numVertices.operator_square_bracket(strip);
+    int vertsInStrip = numVertices.operator_square_bracketI(strip);
 
     detail.setPartIndex(strip);
 
@@ -894,7 +894,7 @@ private void OmOn(SoGLRenderAction action ) {
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     final int numStrips = numVertices.getNum();
-    final int[] numVerts = numVertices.getValuesInt(0);
+    final int[] numVerts = numVertices.getValuesI(0);
 
     int v;
 	int numVertsIndex = 0;
@@ -934,7 +934,7 @@ private void OmOnT (SoGLRenderAction action ) {
     final int texCoordStride = vpCache.getTexCoordStride();
     SoVPCacheFunc texCoordFunc = vpCache.texCoordFunc;
     final int numStrips = numVertices.getNum();
-    final int[] numVerts = numVertices.getValuesInt(0);
+    final int[] numVerts = numVertices.getValuesI(0);
 
     int v;
 	int numVertsIndex = 0;
@@ -977,7 +977,7 @@ public void OmFn (SoGLRenderAction action) {
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
     gl2.glShadeModel(GL2.GL_FLAT);
     final int numStrips = numVertices.getNum();
-    final int[] numVerts = numVertices.getValuesInt(0);
+    final int[] numVerts = numVertices.getValuesI(0);
 
     int v;
 	int numVertsIndex = 0;
@@ -1029,7 +1029,7 @@ OmVn
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
     final int numStrips = numVertices.getNum();
-    final int[] numVerts = numVertices.getValuesInt(0);
+    final int[] numVerts = numVertices.getValuesI(0);
 
     int v;
     int numVertsIndex = 0; // java port

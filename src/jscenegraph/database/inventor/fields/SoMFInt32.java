@@ -58,6 +58,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import jscenegraph.database.inventor.SoInput;
+import jscenegraph.port.Mutable;
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Multiple-value field containing any number of int32_t integers.
@@ -83,20 +84,22 @@ separated by commas; for example:
  * @author Yves Boyadjian
  *
  */
-public class SoMFInt32 extends SoMField<Integer> {
+public class SoMFInt32 extends SoMField<Object> {
+
+	private int[] values;
 
 	/**
 	 * java port
 	 * @param start
 	 * @param newValues
 	 */
-    public void setValues(int start, int[] newValues) {
-    	Integer[] newIValues = new Integer[newValues.length];
-    	for(int i=0;i<newValues.length;i++) {
-    		newIValues[i] = new Integer(newValues[i]);
-    	}
-    	super.setValues(start,newIValues);
-    }
+//    public void setValues(int start, int[] newValues) {
+//    	Integer[] newIValues = new Integer[newValues.length];
+//    	for(int i=0;i<newValues.length;i++) {
+//    		newIValues[i] = new Integer(newValues[i]);
+//    	}
+//    	super.setValues(start,newIValues);
+//    }
 
                 /**
                  * java port                                                              
@@ -129,15 +132,15 @@ public class SoMFInt32 extends SoMField<Integer> {
 	}
 	
 	// java port
-	public int[] getValuesInt(int index) {
-		Integer[] valuesInteger = getValues(index);
-		int returnLength = valuesInteger.length;
-		int[] returnValue = new int[returnLength];
-		for(int i=0; i< returnLength;i++) {
-			returnValue[i] = valuesInteger[i];
-		}
-		return returnValue;
-	}
+//	public int[] getValuesInt(int index) {
+//		Integer[] valuesInteger = getValues(index);
+//		int returnLength = valuesInteger.length;
+//		int[] returnValue = new int[returnLength];
+//		for(int i=0; i< returnLength;i++) {
+//			returnValue[i] = valuesInteger[i];
+//		}
+//		return returnValue;
+//	}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -193,4 +196,86 @@ public void setValuesBuffer(ByteBuffer buffer) {
 	setValues(0,array);
 }
 
+protected void allocValues(int newNum) {
+	if (values == null) {
+		if (newNum > 0) {
+			values = new int[newNum];
+		}
+	} else {
+		int[] oldValues = values;
+		int i;
+
+		if (newNum > 0) {
+			values = new int[newNum];
+			for (i = 0; i < num && i < newNum; i++)
+				values[i] = oldValues[i];
+		} else
+			values = null;
+		// delete [] oldValues; java port
+	}
+
+	num = maxNum = newNum;
+}
+
+/* Set field to have one value */
+public void setValue(int newValue) {
+	makeRoom(1);
+	values[0] = newValue;
+	valueChanged();
+}
+
+public void setValues(int start, int[] newValues) {
+	int localNum = newValues.length;
+	int newNum = start + localNum, i;
+
+	if (newNum > getNum())
+		makeRoom(newNum);
+
+	for (i = 0; i < localNum; i++) {
+		values[start + i] = newValues[i];
+	}
+	valueChanged();
+
+}
+
+/* Set 1 value at given index */
+public void set1Value(int index, int newValue) {
+	if (index >= getNum())
+		makeRoom(index + 1);
+	values[index] = newValue;
+	valueChanged();
+}
+
+/* Get pointer into array of values */
+public int[] getValuesI(int start) {
+	evaluate();
+	
+	if(start == 0) {
+		return values;
+	}
+
+	int retLength = values.length - start;
+
+	int[] retVal = new int[retLength];
+
+	for (int i = 0; i < retLength; i++) {
+		retVal[i] = (int) values[i + start];
+	}
+	return retVal;
+}
+
+public int operator_square_bracketI(int i) {
+	evaluate();
+	return (int) values[i];
+}
+
+// ! Copies value indexed by "from" to value indexed by "to"
+protected void copyValue(int to, int from) {
+	values[to] = values[from];
+}
+
+/* Get non-const pointer into array of values for batch edits */          
+public int[] startEditingI()                                
+    { evaluate(); return values; }                                        
+                                                                          
 }

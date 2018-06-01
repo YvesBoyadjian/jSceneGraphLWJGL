@@ -346,10 +346,10 @@ generatePrimitives(SoAction action)
   pvs[1].setDetail(detail);
 
   numIndices      = coordIndex.getNum();
-  coordIndices    = coordIndex.getValuesInt(0);
-  matlIndices     = materialIndex.getValuesInt(0);
-  normIndices     = normalIndex.getValuesInt(0);
-  texCoordIndices = textureCoordIndex.getValuesInt(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
 
   // Check for special case of 1 index of SO_END_LINE_INDEX. This
   // means that coord indices are to be used for materials, normals,
@@ -669,7 +669,7 @@ wouldGenerateNormals(SoState state)
       SoMFInt32 nIndices;
 
       if (normalIndex.getNum() == 1 &&
-        normalIndex.operator_square_bracket(0) == SO_END_LINE_INDEX) {
+        normalIndex.operator_square_bracketI(0) == SO_END_LINE_INDEX) {
           nIndices = coordIndex;
       }
       else {
@@ -677,7 +677,7 @@ wouldGenerateNormals(SoState state)
       }
       // Find greatest index:
       for (i = 0; i < nIndices.getNum(); i++) {
-        if ((nIndices).operator_square_bracket(i) > numNeeded)
+        if ((nIndices).operator_square_bracketI(i) > numNeeded)
           numNeeded = (int) (nIndices).operator_square_bracket(i);
       }
       SoNormalElement ne = SoNormalElement.getInstance(state);
@@ -860,11 +860,11 @@ countPolylinesAndSegments()
   numPolylines = 0;
   int i, numVerts = 0;
   for(i = 0; i < coordIndex.getNum(); i++){
-    if (coordIndex.operator_square_bracket(i) == SO_END_LINE_INDEX || 
+    if (coordIndex.operator_square_bracketI(i) == SO_END_LINE_INDEX || 
       (i == coordIndex.getNum()-1)) {
         ++numPolylines;
     } 
-    if (coordIndex.operator_square_bracket(i) != SO_END_LINE_INDEX) {
+    if (coordIndex.operator_square_bracketI(i) != SO_END_LINE_INDEX) {
       ++numVerts;
     }
   }
@@ -875,7 +875,7 @@ countPolylinesAndSegments()
   int np = 0;
   int nv = 0;
   for(i = 0; i< coordIndex.getNum(); i++){
-    if (coordIndex.operator_square_bracket(i) == SO_END_LINE_INDEX ){
+    if (coordIndex.operator_square_bracketI(i) == SO_END_LINE_INDEX ){
       numVertices[np] = nv;
       nv=0;
       np++;               
@@ -931,9 +931,9 @@ private void GLRenderInternal( SoGLRenderAction  action, int useTexCoordsAnyway,
       // VA rendering is only possible if there is a color VBO, since it manages the packed color swapping
       ((vpCache.getMaterialBinding() != SoMaterialBindingElement.Binding.PER_VERTEX_INDEXED) || SoGLVBOElement.getInstance(state).getVBO(SoGLVBOElement.VBOType.COLOR_VBO) != null) &&
       (vpCache.getNumTexCoords()==0 || (vpCache.getTexCoordBinding() == SoTextureCoordinateBindingElement.Binding.PER_VERTEX_INDEXED)) &&
-      (materialIndex.getNum()==1 && materialIndex.getValues(0)[0]==-1) && 
-      (normalIndex.getNum()==1 && normalIndex.getValues(0)[0]==-1) && 
-      (textureCoordIndex.getNum()==1 && textureCoordIndex.getValues(0)[0]==-1) &&
+      (materialIndex.getNum()==1 && materialIndex.getValuesI(0)[0]==-1) && 
+      (normalIndex.getNum()==1 && normalIndex.getValuesI(0)[0]==-1) && 
+      (textureCoordIndex.getNum()==1 && textureCoordIndex.getValuesI(0)[0]==-1) &&
       (SoDrawStyleElement.get(action.getState()) != SoDrawStyleElement.Style.POINTS))
   {
     // we have exactly N separate lines (numPolylines == numSegments)
@@ -945,7 +945,7 @@ private void GLRenderInternal( SoGLRenderAction  action, int useTexCoordsAnyway,
     _lineIndexer.setType(sendAdjacency.getValue()?GL3.GL_LINES_ADJACENCY:GL2.GL_LINES);
 
     if (_lineIndexer.getDataId()!=getNodeId()) {
-      _lineIndexer.setInventorLines(numPolylines, coordIndex.getValuesInt(0), getNodeId());
+      _lineIndexer.setInventorLines(numPolylines, coordIndex.getValuesI(0), getNodeId());
     }
     _lineIndexer.render(state, useVBO);
 
@@ -977,7 +977,7 @@ OmVn
 	
     int np = numPolylines;
     final int[] numverts = numVertices;
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     boolean renderAsPoints = (SoDrawStyleElement.get(action.getState()) ==
 		      SoDrawStyleElement.Style.POINTS);
     boolean sendAdj = sendAdjacency.getValue();
@@ -988,7 +988,7 @@ OmVn
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     int vtxCtr = 0;
     int v;

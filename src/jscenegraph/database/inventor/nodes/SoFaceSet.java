@@ -300,7 +300,7 @@ computeBBox(SoAction action, final SbBox3f box, final SbVec3f center)
   // Count up total number of vertices used. If the last entry in
   // numVerts is SO_FACE_SET_USE_REST_OF_VERTICES, then we need
   // to use all of the vertices.
-  if (numVertices.operator_square_bracket(numFaces-1) == SO_FACE_SET_USE_REST_OF_VERTICES)
+  if (numVertices.operator_square_bracketI(numFaces-1) == SO_FACE_SET_USE_REST_OF_VERTICES)
     numVerts = -1;
   else
     for (int i = 0; i < numFaces; i++)
@@ -413,12 +413,12 @@ setupNumTrisQuadsFaces()
   usingUSE_REST = false;
   nvNotifyEnabled = true;
   int nfaces = numVertices.getNum();
-  if(nfaces != 0 && numVertices.operator_square_bracket(nfaces-1)<0) {
+  if(nfaces != 0 && numVertices.operator_square_bracketI(nfaces-1)<0) {
     usingUSE_REST = true;
     nvNotifyEnabled = numVertices.enableNotify(false);
     totalNumVertices = 0;
     for(int i = 0; i<nfaces -1; i++)
-      totalNumVertices += numVertices.operator_square_bracket(i);
+      totalNumVertices += numVertices.operator_square_bracketI(i);
     numVertices.set1Value(nfaces-1, 
       vpCache.numVerts - totalNumVertices - startIndex.getValue());       
     vpCache.needFromState |=
@@ -428,17 +428,17 @@ setupNumTrisQuadsFaces()
   else if (totalNumVertices <0 ){
     totalNumVertices = 0;
     for (int i=0; i< nfaces; i++){
-      totalNumVertices += numVertices.operator_square_bracket(i);
+      totalNumVertices += numVertices.operator_square_bracketI(i);
     }
   }
 
   int i = 0;
 
-  while ((i < nfaces) && (numVertices.operator_square_bracket(i) == 3)) {
+  while ((i < nfaces) && (numVertices.operator_square_bracketI(i) == 3)) {
     ++numTris;
     ++i; 
   }
-  while ((i < nfaces) && (numVertices.operator_square_bracket(i) == 4) ) {
+  while ((i < nfaces) && (numVertices.operator_square_bracketI(i) == 4) ) {
     ++numQuads;
     ++i; 
   }
@@ -654,7 +654,7 @@ figureNormals(SoState state, SoNormalBundle nb)
     return false;
 
   // Count number of vertices:
-  if (numVertices.operator_square_bracket(numFaces - 1) == SO_FACE_SET_USE_REST_OF_VERTICES) {
+  if (numVertices.operator_square_bracketI(numFaces - 1) == SO_FACE_SET_USE_REST_OF_VERTICES) {
     SoCoordinateElement ce =
       SoCoordinateElement.getInstance(state);
     numNeeded = (int) ce.getNum();

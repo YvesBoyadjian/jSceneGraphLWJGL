@@ -178,10 +178,10 @@ getNumPoints(final SoMFInt32 index, int numCoords)
 ////////////////////////////////////////////////////////////////////////
 {
     int numIndices = index.getNum();
-    if (index.operator_square_bracket(numIndices-1) != SO_LINEAR_PROFILE_USE_REST_OF_VERTICES)
+    if (index.operator_square_bracketI(numIndices-1) != SO_LINEAR_PROFILE_USE_REST_OF_VERTICES)
         return numIndices;
 
-    int lastIndex = (numIndices == 1 ? -1 : index.operator_square_bracket(numIndices-2)+1);
+    int lastIndex = (numIndices == 1 ? -1 : index.operator_square_bracketI(numIndices-2)+1);
 
     // Return regular indices plus number of coordinates left:
     return (numIndices-1) + (numCoords-1 - lastIndex);
@@ -203,12 +203,12 @@ getIndex(int i, final SoMFInt32 index, int numCoords)
     int numIndices = index.getNum();
     int result;
 
-    if (index.operator_square_bracket(numIndices-1) != SO_LINEAR_PROFILE_USE_REST_OF_VERTICES) {
-        result = index.operator_square_bracket(i);
+    if (index.operator_square_bracketI(numIndices-1) != SO_LINEAR_PROFILE_USE_REST_OF_VERTICES) {
+        result = index.operator_square_bracketI(i);
     } else {
         if (i < numIndices-1) result = i;
         else {
-            int lastIndex = (numIndices == 1 ? -1 : index.operator_square_bracket(numIndices-2)+1);
+            int lastIndex = (numIndices == 1 ? -1 : index.operator_square_bracketI(numIndices-2)+1);
             
             result = lastIndex+1 + i-(numIndices-1);
         }

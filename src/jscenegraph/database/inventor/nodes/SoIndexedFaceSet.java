@@ -498,10 +498,10 @@ public void generatePrimitives(SoAction action)
   texCoordsIndexed = areTexCoordsIndexed(action);
 
   numIndices      = coordIndex.getNum();
-  coordIndices    = coordIndex.getValuesInt(0);
-  matlIndices     = materialIndex.getValuesInt(0);
-  normIndices     = normalIndex.getValuesInt(0);
-  texCoordIndices = textureCoordIndex.getValuesInt(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
 
   // Check for special case of 1 index of SO_END_FACE_INDEX. This
   // means that coord indices are to be used for materials, normals,
@@ -665,10 +665,10 @@ public SoDetail createTriangleDetail(SoRayPickAction action,
   int[]       coordIndices, matlIndices;
   int[]       normIndices, texCoordIndices;
 
-  coordIndices    = coordIndex.getValuesInt(0);
-  matlIndices     = materialIndex.getValuesInt(0);
-  normIndices     = normalIndex.getValuesInt(0);
-  texCoordIndices = textureCoordIndex.getValuesInt(0);
+  coordIndices    = coordIndex.getValuesI(0);
+  matlIndices     = materialIndex.getValuesI(0);
+  normIndices     = normalIndex.getValuesI(0);
+  texCoordIndices = textureCoordIndex.getValuesI(0);
   if (materialIndex.getNum() == 1 && matlIndices[0] == SO_END_FACE_INDEX)
     matlIndices = coordIndices;
   if (normalIndex.getNum() == 1 && normIndices[0] == SO_END_FACE_INDEX) 
@@ -856,16 +856,16 @@ public boolean figureNormals(SoState state, SoNormalBundle nb)
   int                 numNeeded = 0, i, numVertices = 0;
   final SoMFInt32     nIndices;
 
-  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracket(0) == SO_END_FACE_INDEX)
+  if (normalIndex.getNum() == 1 && normalIndex.operator_square_bracketI(0) == SO_END_FACE_INDEX)
     nIndices = coordIndex;
   else
     nIndices = normalIndex;
 
   // Find greatest index:
   for (i = 0; i < nIndices.getNum(); i++) {
-    if ((nIndices).operator_square_bracket(i) > numNeeded)
+    if ((nIndices).operator_square_bracketI(i) > numNeeded)
       numNeeded = (int) (nIndices).operator_square_bracket(i);
-    if ((nIndices).operator_square_bracket(i) >= 0) // Count vertices
+    if ((nIndices).operator_square_bracketI(i) >= 0) // Count vertices
       ++numVertices;
   }
 
@@ -905,7 +905,7 @@ public boolean generateDefaultNormals(SoState state, SoNormalBundle nb)
     int vertsInFace;
     for (vertsInFace = 0;
       vertsInFace + curIndex < numIndices &&
-      coordIndex.operator_square_bracket(vertsInFace + curIndex) != SO_END_FACE_INDEX;
+      coordIndex.operator_square_bracketI(vertsInFace + curIndex) != SO_END_FACE_INDEX;
     vertsInFace++)
       ;
 
@@ -919,12 +919,12 @@ public boolean generateDefaultNormals(SoState state, SoNormalBundle nb)
 
     // Loop through all vertices of current face
     while (curIndex < numIndices &&
-      coordIndex.operator_square_bracket(curIndex) != SO_END_FACE_INDEX) {
+      coordIndex.operator_square_bracketI(curIndex) != SO_END_FACE_INDEX) {
 
         if (ce != null)
           nb.polygonVertex(ce.get3((int)coordIndex.operator_square_bracket(curIndex)));
         else
-          nb.polygonVertex(vpCoords[coordIndex.operator_square_bracket(curIndex)]);
+          nb.polygonVertex(vpCoords[coordIndex.operator_square_bracketI(curIndex)]);
 
         curIndex++;
     }
@@ -972,14 +972,14 @@ public void setupNumTrisQuadsFaces()
   int i = 0;
   final int numCoords = coordIndex.getNum();
   while ((i < numCoords - 2) && 
-    ((i+3 == numCoords)||(coordIndex.operator_square_bracket(i+3) == SO_END_FACE_INDEX))) {
+    ((i+3 == numCoords)||(coordIndex.operator_square_bracketI(i+3) == SO_END_FACE_INDEX))) {
       ++numTris;
       i += 4;  // Skip past three vertex indices and END_OF_FACE
       // marker
   }
   while ((i < numCoords - 3) && 
-    ((i+4 == numCoords) ||(coordIndex.operator_square_bracket(i+4) == SO_END_FACE_INDEX)) &&
-    (coordIndex.operator_square_bracket(i+3) != SO_END_FACE_INDEX)) {
+    ((i+4 == numCoords) ||(coordIndex.operator_square_bracketI(i+4) == SO_END_FACE_INDEX)) &&
+    (coordIndex.operator_square_bracketI(i+3) != SO_END_FACE_INDEX)) {
 
       ++numQuads;
       i += 5;  // Skip past three vertex indices and END_OF_FACE
@@ -988,7 +988,7 @@ public void setupNumTrisQuadsFaces()
   /* if there aren't 3 vertices, no polygons are rendered */
   if (i > numCoords - 3 ) return;
   while (i < numCoords) {
-    if ((i+1 == numCoords)||(coordIndex.operator_square_bracket(i) == SO_END_FACE_INDEX))
+    if ((i+1 == numCoords)||(coordIndex.operator_square_bracketI(i) == SO_END_FACE_INDEX))
       ++numFaces;
     ++i;
   }
@@ -1024,9 +1024,9 @@ public void GLRenderInternal( SoGLRenderAction action , int useTexCoordsAnyway, 
       // VA rendering is only possible if there is a color VBO, since it manages the packed color swapping
       ((vpCache.getMaterialBinding() != SoMaterialBindingElement.Binding.PER_VERTEX_INDEXED) || SoGLVBOElement.getInstance(state).getVBO(SoGLVBOElement.VBOType.COLOR_VBO) != null) &&
       (vpCache.getNumTexCoords()==0 || (vpCache.getTexCoordBinding() == SoTextureCoordinateBindingElement.Binding.PER_VERTEX_INDEXED)) &&
-      (materialIndex.getNum()==1 && materialIndex.getValues(0)[0]==-1) && 
-      (normalIndex.getNum()==1 && normalIndex.getValues(0)[0]==-1) && 
-      (textureCoordIndex.getNum()==1 && textureCoordIndex.getValues(0)[0]==-1))
+      (materialIndex.getNum()==1 && materialIndex.getValuesI(0)[0]==-1) && 
+      (normalIndex.getNum()==1 && normalIndex.getValuesI(0)[0]==-1) && 
+      (textureCoordIndex.getNum()==1 && textureCoordIndex.getValuesI(0)[0]==-1))
   {
     fastPathTaken = true;
     if (numTris > 0 || numQuads > 0) {
@@ -1037,7 +1037,7 @@ public void GLRenderInternal( SoGLRenderAction action , int useTexCoordsAnyway, 
           _triangleIndexer = new SoVertexArrayIndexer(GL2.GL_TRIANGLES);
         }
         if (_triangleIndexer.getDataId()!=getNodeId()) {
-          _triangleIndexer.setInventorTriangles(numTris, coordIndex.getValuesInt(0), getNodeId());
+          _triangleIndexer.setInventorTriangles(numTris, coordIndex.getValuesI(0), getNodeId());
         }
         _triangleIndexer.render(state, useVBO);
       }
@@ -1048,7 +1048,7 @@ public void GLRenderInternal( SoGLRenderAction action , int useTexCoordsAnyway, 
         }
         if (_quadIndexer.getDataId()!=getNodeId()) {
           // offset is numTris * (3 indices + -1 triangle end code)
-          _quadIndexer.setInventorQuads(numQuads, coordIndex.getValuesInt(numTris * 4), getNodeId());
+          _quadIndexer.setInventorQuads(numQuads, coordIndex.getValuesI(numTris * 4), getNodeId());
         }
         _quadIndexer.render(state, useVBO);
       }
@@ -1116,14 +1116,14 @@ public void TriOmVn (SoGLRenderAction action) {
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1149,14 +1149,14 @@ QuadOmVn
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(GL2.GL_QUADS);
     int vtxCtr = numTris*4;
@@ -1195,18 +1195,18 @@ public void TriFmVn (SoGLRenderAction action) {
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1234,18 +1234,18 @@ QuadFmVn
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(GL2.GL_QUADS);
     int vtxCtr = numTris*4;
@@ -1285,18 +1285,18 @@ public void TriVmVn (SoGLRenderAction action ) {
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
 
     gl2.glBegin(GL2.GL_TRIANGLES);
     int vtxCtr = 0;
@@ -1324,7 +1324,7 @@ public void GenOmVn(SoGLRenderAction action)
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     final int numVI = coordIndex.getNum();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1332,7 +1332,7 @@ public void GenOmVn(SoGLRenderAction action)
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    Integer[] normalIndx = getNormalIndices();
+    int[] normalIndx = getNormalIndices();
     int vtxCtr = numQuads*5 + numTris*4;
     while (vtxCtr < numVI) {
 	gl2.glBegin(GL2.GL_POLYGON);
@@ -1356,7 +1356,7 @@ GenVmOn
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     final int numVI = coordIndex.getNum();
     // Send one normal, if there are any normals in vpCache:
     if (vpCache.getNumNormals() > 0)
@@ -1367,7 +1367,7 @@ GenVmOn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     int vtxCtr = numQuads*5 + numTris*4;
     while (vtxCtr < numVI) {
 	gl2.glBegin(GL2.GL_POLYGON);
@@ -1393,7 +1393,7 @@ GenFmVn
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     final int numVI = coordIndex.getNum();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1401,11 +1401,11 @@ GenFmVn
     Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
-    Integer[] colorIndx = getColorIndices();
+    int[] colorIndx = getColorIndices();
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    final Integer[] normalIndx = getNormalIndices();
+    final int[] normalIndx = getNormalIndices();
     int vtxCtr = numQuads*5 + numTris*4;
     int faceCtr = numQuads + numTris;
     while (vtxCtr < numVI) {
@@ -1435,7 +1435,7 @@ GenOmFn
 	
 	GL2 gl2 = action.getCacheContext();
 	
-    final int[] vertexIndex = coordIndex.getValuesInt(0);
+    final int[] vertexIndex = coordIndex.getValuesI(0);
     final int numVI = coordIndex.getNum();
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
@@ -1443,7 +1443,7 @@ GenOmFn
     Buffer normalPtr = vpCache.getNormals(0);
     final int normalStride = vpCache.getNormalStride();
     SoVPCacheFunc normalFunc = vpCache.normalFunc;
-    final Integer[] normalIndx = getNormalIndices();
+    final int[] normalIndx = getNormalIndices();
     int vtxCtr = numQuads*5 + numTris*4;
     int faceCtr = numQuads + numTris;
     while (vtxCtr < numVI) {
