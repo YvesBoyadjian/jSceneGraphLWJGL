@@ -89,7 +89,7 @@ public class SoCullElement extends SoElement {
 	
 	private static final int MAXPLANES = 32;
 	
-	private final Array<SbPlane> plane = new Array<>(SbPlane.class,MAXPLANES);
+	private final Array<SbPlane> plane = new Array<>(SbPlane.class,new SbPlane[MAXPLANES]);
 	
 	private int numplanes;
 	
@@ -147,7 +147,7 @@ public class SoCullElement extends SoElement {
 	      return;
 	    }
 	    int i;
-	    final Array<SbPlane> vvplane = new Array<>(SbPlane.class,6);
+	    final Array<SbPlane> vvplane = new Array<>(SbPlane.class,new SbPlane[6]);
 	    vv.getViewVolumePlanes(vvplane);
 	    if (elem.vvindex >= 0) { // overwrite old view volume
 	      for (i = 0; i < 6; i++) {

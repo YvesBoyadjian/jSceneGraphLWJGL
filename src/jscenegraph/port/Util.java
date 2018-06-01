@@ -80,6 +80,49 @@ public class Util {
 		return retVal;
 	}
 
+	public static ByteBuffer toByteBuffer(Array<?> objArray) {
+		int arrayLength = objArray.size();
+		
+		ByteBuffer retVal = null;
+		if(objArray.getElementClass().equals(SbVec2f.class)) {
+			Array<SbVec2f> objArray2d = (Array<SbVec2f>)objArray;
+			int nbBytes = (int)(arrayLength * 2 * (long)Float.SIZE / Byte.SIZE);
+			retVal = Buffers.newDirectByteBuffer(nbBytes);
+			for(int i=0; i< arrayLength;i++) {
+				float[] value = objArray2d.get(i).getValue();
+				retVal.putFloat(value[0]);
+				retVal.putFloat(value[1]);
+			}
+		}
+		
+		if(objArray.getElementClass().equals(SbVec3f.class)) {
+			Array<SbVec3f> objArray3d = (Array<SbVec3f>)objArray;
+			int nbBytes = (int)(arrayLength * 3 * (long)Float.SIZE / Byte.SIZE);
+			retVal = Buffers.newDirectByteBuffer(nbBytes);
+			for(int i=0; i< arrayLength;i++) {
+				float[] value = objArray3d.get(i).getValue();
+				retVal.putFloat(value[0]);
+				retVal.putFloat(value[1]);
+				retVal.putFloat(value[2]);
+			}
+		}
+		
+		if(objArray.getElementClass().equals(SbVec4f.class)) {
+			Array<SbVec4f> objArray4d = (Array<SbVec4f>)objArray;
+			int nbBytes = (int)(arrayLength * 4 * (long)Float.SIZE / Byte.SIZE);
+			retVal = Buffers.newDirectByteBuffer(nbBytes);
+			for(int i=0; i< arrayLength;i++) {
+				float[] value = objArray4d.get(i).getValue();
+				retVal.putFloat(value[0]);
+				retVal.putFloat(value[1]);
+				retVal.putFloat(value[2]);
+				retVal.putFloat(value[3]);
+			}
+		}
+		retVal.rewind();
+		return retVal;
+	}
+
 	public static ByteBuffer toByteBuffer(SbVec2f[] objArray) {
 		int arrayLength = objArray.length;
 		int nbBytes = (int)(arrayLength * 2 * (long)Float.SIZE / Byte.SIZE);

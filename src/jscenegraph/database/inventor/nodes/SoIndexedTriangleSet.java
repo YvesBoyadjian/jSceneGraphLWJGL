@@ -910,7 +910,7 @@ private void GLRenderInternal( final SoGLRenderAction action , int useTexCoordsA
   if (vpCache.colorIsInVtxProp()) {
     lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
     lazyElt.sendVPPacked(state, (IntBuffer)
-      vpCache.getColors(0)/*.asIntBuffer()*/);
+      vpCache.getColors(0).toIntBuffer()/*.asIntBuffer()*/);
   } else {
     lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
   }
@@ -1183,7 +1183,7 @@ TriFmOn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1216,7 +1216,7 @@ TriFmOnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1253,7 +1253,7 @@ TriFmFn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1288,7 +1288,7 @@ TriFmFnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1330,7 +1330,7 @@ TriFmVn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1367,7 +1367,7 @@ TriFmVnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1414,7 +1414,7 @@ TriVmOn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1449,7 +1449,7 @@ TriVmOnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1488,7 +1488,7 @@ TriVmFn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1525,7 +1525,7 @@ TriVmFnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1569,7 +1569,7 @@ TriVmVn
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();
@@ -1608,7 +1608,7 @@ TriVmVnT
     Buffer vertexPtr = vpCache.getVertices(0);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(0);
+    Buffer colorPtr = vpCache.getColors(0).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
     Integer[] colorIndx = getColorIndices();

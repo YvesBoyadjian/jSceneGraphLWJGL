@@ -748,7 +748,7 @@ GLRender(SoGLRenderAction action)
 	if(vpCache.colorIsInVtxProp()){
 	    lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 	    lazyElt.sendVPPacked(state, (IntBuffer)
-		vpCache.getColors(0)/*.asIntBuffer()*/);
+		vpCache.getColors(0).toIntBuffer()/*.asIntBuffer()*/);
 	}
 	else lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 
@@ -862,7 +862,7 @@ GLRender(SoGLRenderAction action)
 	if(vpCache.colorIsInVtxProp()){
 	    lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 	    lazyElt.sendVPPacked(state,(IntBuffer) 
-		vpCache.getColors(0)/*.asIntBuffer()*/);
+		vpCache.getColors(0).toIntBuffer()/*.asIntBuffer()*/);
 	}
 	else lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 

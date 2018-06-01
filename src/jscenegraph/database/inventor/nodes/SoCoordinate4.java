@@ -67,6 +67,7 @@ import jscenegraph.database.inventor.fields.SoMFVec4f;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.mevis.inventor.elements.SoGLVBOElement;
 import jscenegraph.mevis.inventor.misc.SoVBO;
+import jscenegraph.port.VoidPtr;
 
 /**
  * @author Yves Boyadjian
@@ -189,7 +190,7 @@ SoCoordinate4_doAction(SoAction action)
         point.getNum(), point.getValues(0));
       if (state.isElementEnabled(SoGLVBOElement.getClassStackIndex(SoGLVBOElement.class))) {
         SoGLVBOElement.updateVBO(state, SoGLVBOElement.VBOType.VERTEX_VBO, _vbo,
-          point.getNum()*SbVec4f.sizeof(), point.getValuesBytes(0), getNodeId());
+          point.getNum()*SbVec4f.sizeof(), VoidPtr.create(point.getValuesArray(0)), getNodeId());
       }
     }
 }

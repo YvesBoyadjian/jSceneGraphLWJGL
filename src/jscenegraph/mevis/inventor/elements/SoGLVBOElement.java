@@ -44,6 +44,7 @@ import com.jogamp.opengl.GL2;
 import jscenegraph.database.inventor.elements.SoElement;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.mevis.inventor.misc.SoVBO;
+import jscenegraph.port.VoidPtr;
 
 //! Manage the currently registered VBOs in the state (for coordinates, normals, colors and tex coords)
 //! (MeVis ONLY)
@@ -133,7 +134,7 @@ public  static void updateVBO(SoState state, VBOType type, final SoVBO[] vbo) {
 }
 
 
-public static void updateVBO( SoState state, VBOType type, final SoVBO[] vbo, int numBytes /*= 0*/, ByteBuffer data /*= NULL*/, int nodeId /*= 0*/ )
+public static void updateVBO( SoState state, VBOType type, final SoVBO[] vbo, int numBytes /*= 0*/, /*ByteBuffer*/VoidPtr data /*= NULL*/, int nodeId /*= 0*/ )
 {
   // we always create/store a VBO object, since we may even use it for vertex array rendering
   // and we do not know if the user desires VBO usage or not in here...

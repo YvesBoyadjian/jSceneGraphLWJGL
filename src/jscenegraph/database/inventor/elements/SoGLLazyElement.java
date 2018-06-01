@@ -71,6 +71,7 @@ import jscenegraph.database.inventor.nodes.SoNode;
 import jscenegraph.database.inventor.nodes.SoPackedColor;
 import jscenegraph.mevis.inventor.misc.SoVBO;
 import jscenegraph.port.Util;
+import jscenegraph.port.VoidPtr;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2138,7 +2139,7 @@ public void updateColorVBO( SoState state, SoVBO vbo )
     maxId = ivState.transpNodeId;
   }
   if (vbo.getDataId()!=maxId) {
-    vbo.setData((int)(ivState.numDiffuseColors * (long)Integer.SIZE/Byte.SIZE), Util.toByteBuffer(ivState.packedColors), maxId, state);
+    vbo.setData((int)(ivState.numDiffuseColors * (long)Integer.SIZE/Byte.SIZE), VoidPtr.create(/*Util.toByteBuffer(*/ivState.packedColors/*)*/), maxId, state);
   }
 }
 

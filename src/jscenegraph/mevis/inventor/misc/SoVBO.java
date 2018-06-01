@@ -50,6 +50,7 @@ import jscenegraph.database.inventor.elements.SoShapeHintsElement;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.port.CharPtr;
 import jscenegraph.port.Destroyable;
+import jscenegraph.port.VoidPtr;
 
 
 //! SoVBO is used to manage OpenGL vertex buffer objects.
@@ -65,7 +66,7 @@ public class SoVBO implements Destroyable {
 
 private	  int _type;
 
-private		  Buffer _data;
+private		  /*Buffer*/VoidPtr _data;
 private		  int      _numBytes;
 private		  int _nodeId;
 
@@ -120,7 +121,7 @@ public void destructor()
   freeGL();
 }
 
-public void setData(int numBytes, final Buffer data, int nodeId, SoState state)
+public void setData(int numBytes, final /*Buffer*/VoidPtr data, int nodeId, SoState state)
 {
   // free previous data if it was owned
   if (_ownsData && (_data != null)) {
@@ -145,7 +146,7 @@ public void allocateData( int numBytes, int nodeId , SoState state)
   freeGL(state);
 
   _numBytes = numBytes;
-  _data = Buffers.newDirectByteBuffer(numBytes/*/Integer.BYTES*/);//ByteBuffer.allocate(numBytes);//new int[numBytes/Integer.SIZE];//malloc(numBytes); TODO JOGL
+  _data = VoidPtr.create(Buffers.newDirectByteBuffer(numBytes/*/Integer.BYTES*/));//ByteBuffer.allocate(numBytes);//new int[numBytes/Integer.SIZE];//malloc(numBytes); TODO JOGL
   _nodeId = nodeId;
   _ownsData = true;
   _hasSwappedRGBAData = false;
@@ -168,7 +169,7 @@ public void copyAndSwapPackedRGBA( int numValues, final IntBuffer values, int no
 
   _hasSwappedRGBAData = true;
 
-  IntBuffer dest = (IntBuffer)_data/*.asIntBuffer()*/;
+  IntBuffer dest = (IntBuffer)_data.toIntBuffer()/*.asIntBuffer()*/;
   dest.clear();
   for (int i = 0; i < numValues; i++) {
     int value = values.get(i);
@@ -184,7 +185,7 @@ public void copyAndSwapPackedRGBA( int numValues, final IntBuffer values, int no
 
 public void copyAndSwapPackedRGBA( SoState state )
 {
-  copyAndSwapPackedRGBA(_numBytes/4, (IntBuffer)_data/*.asIntBuffer()*/, _nodeId, state);
+  copyAndSwapPackedRGBA(_numBytes/4, (IntBuffer)_data.toIntBuffer()/*.asIntBuffer()*/, _nodeId, state);
 }
 
 public void freeGL() {
@@ -212,7 +213,7 @@ public boolean bind(SoState state)
     _glBuffer = new SoGLDisplayList(state, SoGLDisplayList.Type.VERTEX_BUFFER_OBJECT);
     _glBuffer.ref();
     gl2.glBindBuffer(_type, _glBuffer.getFirstIndex());
-    gl2.glBufferData(_type, (long)_numBytes, _data, gl2.GL_STATIC_DRAW);
+    gl2.glBufferData(_type, (long)_numBytes, _data.toBuffer(), gl2.GL_STATIC_DRAW);
     _hadGLError = (gl2.glGetError() != gl2.GL_NO_ERROR);
     if (_hadGLError) {
       // unbind after error
@@ -267,7 +268,7 @@ public boolean isValid(SoState state)
 public int getDataId() { return _nodeId; }
 
   //! get the data pointer
-  public Buffer getData() { return _data; }
+  public /*Buffer*/VoidPtr getData() { return _data; }
 
   //! returns if the stored data has been swapped to be compatible to OpenGL on little endian machines
   public boolean hasSwappedRGBAData() { return _hasSwappedRGBAData; }

@@ -60,6 +60,7 @@ import java.util.function.DoubleConsumer;
 import jscenegraph.database.inventor.SbVec3f;
 import jscenegraph.database.inventor.SbVec4f;
 import jscenegraph.database.inventor.SoInput;
+import jscenegraph.port.Array;
 import jscenegraph.port.Util;
 
 /**
@@ -107,6 +108,18 @@ public class SoMFVec4f extends SoMField<SbVec4f> {
 	@Override
 	protected SbVec4f[] arrayConstructor(int length) {
 		return new SbVec4f[length];
+	}
+
+	/* Get pointer into array of values 
+	 * 
+	 * Faster method
+	 * 
+	 * */
+	public Array<SbVec4f> getValuesArray(int start) {
+		evaluate();
+				
+		Array<SbVec4f> shiftedValues = new Array<SbVec4f>(SbVec4f.class, start, values);
+		return shiftedValues;
 	}
 
 	// java port

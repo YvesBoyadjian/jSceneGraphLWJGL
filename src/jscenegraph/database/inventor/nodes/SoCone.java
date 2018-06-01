@@ -90,6 +90,7 @@ import jscenegraph.mevis.inventor.misc.SoVBO;
 import jscenegraph.port.CharPtr;
 import jscenegraph.port.FloatPtr;
 import jscenegraph.port.VectorOfSbVec3f;
+import jscenegraph.port.VoidPtr;
 
 /**
  * @author Yves Boyadjian
@@ -1680,7 +1681,7 @@ public class SoCone extends SoShape {
     }
 
     _cache.vbo.freeGL(state);
-    _cache.vbo.setData(numBytes, data.getBuffer(), 0, state);
+    _cache.vbo.setData(numBytes, VoidPtr.create(data.getBuffer()), 0, state);
     // force upload
     _cache.vbo.bind(state);
     _cache.vertexOffset = vertexOffset.minus(data);

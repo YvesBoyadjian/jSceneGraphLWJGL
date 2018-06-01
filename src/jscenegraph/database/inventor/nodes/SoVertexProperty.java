@@ -83,6 +83,7 @@ import jscenegraph.database.inventor.fields.SoSFEnum;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.mevis.inventor.elements.SoGLVBOElement;
 import jscenegraph.mevis.inventor.misc.SoVBO;
+import jscenegraph.port.VoidPtr;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -521,11 +522,11 @@ public void putVBOsIntoState( SoState state )
   if (state.isElementEnabled(SoGLVBOElement.getClassStackIndex(SoGLVBOElement.class))) {
     if (vertex.getNum() > 0) {
       SoGLVBOElement.updateVBO(state, SoGLVBOElement.VBOType.VERTEX_VBO, _vertexVBO,
-        vertex.getNum() * SbVec3f.sizeof(), vertex.getValuesBytes(0), getNodeId());
+        vertex.getNum() * SbVec3f.sizeof(), VoidPtr.create(vertex.getValuesArray(0)), getNodeId());
     }
     if (normal.getNum() > 0) {
       SoGLVBOElement.updateVBO(state, SoGLVBOElement.VBOType.NORMAL_VBO, _normalVBO,
-        normal.getNum() * SbVec3f.sizeof(), normal.getValuesBytes(0), getNodeId());
+        normal.getNum() * SbVec3f.sizeof(), VoidPtr.create(normal.getValuesArray(0)), getNodeId());
     }
     if (orderedRGBA.getNum() > 0
       && ! SoOverrideElement.getDiffuseColorOverride(state)) {
@@ -534,7 +535,7 @@ public void putVBOsIntoState( SoState state )
     }
     if ( texCoord.getNum() > 0) {
       SoGLVBOElement.updateVBO(state, SoGLVBOElement.VBOType.TEXCOORD_VBO, _texCoordVBO,
-        texCoord.getNum() * SbVec2f.sizeof(), texCoord.getValuesBytes(0), getNodeId());
+        texCoord.getNum() * SbVec2f.sizeof(), VoidPtr.create(texCoord.getValuesBytes(0)), getNodeId());
     }
   }
 }

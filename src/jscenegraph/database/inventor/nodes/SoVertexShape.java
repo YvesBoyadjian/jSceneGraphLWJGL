@@ -503,12 +503,12 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
         dataPtr = null;
       } else {
         // use data pointer from VBO, since it is swapped on little endian machines
-        dataPtr = (IntBuffer)vbo.getData();
+        dataPtr = (IntBuffer)vbo.getData().toIntBuffer();
       }
     } else {
       // we do not have a VBO, but we need swapped color data
       SoError.post("SoVertexShape: Vertex Array rendering was started but not color VBO was set.");
-      dataPtr = (IntBuffer)vpCache.getColors(0);
+      dataPtr = (IntBuffer)vpCache.getColors(0).toIntBuffer();
     }
     if (!shouldUseVBO) {
       if (vboBound) {

@@ -58,7 +58,9 @@ import java.nio.ByteBuffer;
 import java.util.function.DoubleConsumer;
 
 import jscenegraph.database.inventor.SbVec2f;
+import jscenegraph.database.inventor.SbVec3f;
 import jscenegraph.database.inventor.SoInput;
+import jscenegraph.port.Array;
 import jscenegraph.port.Util;
 
 
@@ -114,6 +116,18 @@ public class SoMFVec2f extends SoMField<SbVec2f> {
         	 }        	 
              return shiftedValues; 
              }
+         
+     	/* Get pointer into array of values 
+     	 * 
+     	 * Faster method
+     	 * 
+     	 * */
+     	public Array<SbVec2f> getValuesArray(int start) {
+     		evaluate();
+     				
+     		Array<SbVec2f> shiftedValues = new Array<SbVec2f>(SbVec2f.class, start, values);
+     		return shiftedValues;
+     	}         
          
          public ByteBuffer getValuesBytes(int start) {
         	 SbVec2f[] values = getValues(start);

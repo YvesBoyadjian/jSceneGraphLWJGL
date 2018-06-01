@@ -67,6 +67,7 @@ import jscenegraph.database.inventor.fields.SoMFVec3f;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.mevis.inventor.elements.SoGLVBOElement;
 import jscenegraph.mevis.inventor.misc.SoVBO;
+import jscenegraph.port.VoidPtr;
 
 /**
  * @author Yves Boyadjian
@@ -191,7 +192,7 @@ public void SoNormal_doAction(SoAction action)
       vector.getNum(), vector.getValues(0));
     if (state.isElementEnabled(SoGLVBOElement.getClassStackIndex(SoGLVBOElement.class))) {
       SoGLVBOElement.updateVBO(state, SoGLVBOElement.VBOType.NORMAL_VBO, _vbo,
-        vector.getNum()*(SbVec3f.sizeof()), vector.getValuesBytes(0), getNodeId());
+        vector.getNum()*(SbVec3f.sizeof()), VoidPtr.create(vector.getValuesArray(0)), getNodeId());
     }
   }
 }

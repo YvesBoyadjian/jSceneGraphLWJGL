@@ -39,14 +39,14 @@ public class Buffers {
 		return buffer.asFloatBuffer();
 	}
 
-	public static IntBuffer copyIntBuffer(IntBuffer wrap) {
+	public static ByteBuffer copyIntBuffer(IntBuffer wrap) {
 		int capacity = wrap.capacity();
 		ByteBuffer buffer = BufferUtils.createByteBuffer(capacity*Integer.BYTES);
 		for(int i=0;i<capacity;i++) {
 			buffer.putInt(wrap.get());
 		}
 		buffer.flip();
-		return buffer.asIntBuffer();
+		return buffer;
 	}
 
 }

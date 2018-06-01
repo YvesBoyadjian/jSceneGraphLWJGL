@@ -44,6 +44,7 @@ import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.port.Destroyable;
 import jscenegraph.port.IntArrayPtr;
 import jscenegraph.port.IntPtr;
+import jscenegraph.port.VoidPtr;
 
 
 //! SoVertexArrayIndexer is a class that manages rendering of indexed primitives using
@@ -122,7 +123,7 @@ public void render(SoState state, boolean useVbo)
     if (_indexVbo == null) {
       _indexVbo = new SoVBO(GL2.GL_ELEMENT_ARRAY_BUFFER);
     }
-    _indexVbo.setData(_numIndices* 4/*sizeof(uint32_t)*/, _indices.getBuffer(), _nodeId, state);
+    _indexVbo.setData(_numIndices* 4/*sizeof(uint32_t)*/, VoidPtr.create(_indices.getBuffer()), _nodeId, state);
     if (_indexVbo.bind(state)) {
       // if the VBO could be bound, use it.
       dataPtr = null;

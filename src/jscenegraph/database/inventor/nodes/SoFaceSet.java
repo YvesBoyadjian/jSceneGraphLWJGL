@@ -895,7 +895,7 @@ GLRender(SoGLRenderAction action)
     if (vpCache.colorIsInVtxProp()) {
       lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
       lazyElt.sendVPPacked(state, (IntBuffer)
-        vpCache.getColors(0)/*.asIntBuffer()*/);
+        vpCache.getColors(0).toIntBuffer()/*.asIntBuffer()*/);
     }
     else lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 
@@ -998,7 +998,7 @@ GLRender(SoGLRenderAction action)
     if(vpCache.colorIsInVtxProp()){
       lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
       lazyElt.sendVPPacked(state, (IntBuffer)
-        vpCache.getColors(0)/*.asIntBuffer()*/);
+        vpCache.getColors(0).toIntBuffer()/*.asIntBuffer()*/);
     }
     else lazyElt.send(state, SoLazyElement.masks.ALL_MASK.getValue());
 
@@ -1211,7 +1211,7 @@ QuadFmOn
     Buffer vertexPtr = vpCache.getVertices(startIndex.getValue()+3*numTris);
     final int vertexStride = vpCache.getVertexStride();
     SoVPCacheFunc vertexFunc = vpCache.vertexFunc;
-    Buffer colorPtr = vpCache.getColors(numTris);
+    Buffer colorPtr = vpCache.getColors(numTris).toBuffer();
     final int colorStride = vpCache.getColorStride();
     SoVPCacheFunc colorFunc = vpCache.colorFunc;
 

@@ -80,6 +80,7 @@ import jscenegraph.database.inventor.elements.SoTextureCoordinateBindingElement;
 import jscenegraph.database.inventor.elements.SoTextureCoordinateElement;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.port.Util;
+import jscenegraph.port.VoidPtr;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -542,11 +543,11 @@ public class SoVertexPropertyCache {
 	  	int length = normalPtr.length - offset;
 	  	return Buffers.copyFloatBuffer(FloatBuffer.wrap(normalPtr, offset, length));
 	  }
-  public   Buffer getColors(int i) 
+  public   /*Buffer*/VoidPtr getColors(int i) 
         { 
 	  	int offset = (int)((long)colorStride*i/(Integer.SIZE/Byte.SIZE));
 	  	int length = colorPtr.length - offset;
-	  	return Buffers.copyIntBuffer(IntBuffer.wrap(Util.toIntArray(colorPtr), offset, length));
+	  	return VoidPtr.create(Buffers.copyIntBuffer(IntBuffer.wrap(Util.toIntArray(colorPtr), offset, length)));	  	
 	  }
   public   Buffer getTexCoords(int i) 
         { 
