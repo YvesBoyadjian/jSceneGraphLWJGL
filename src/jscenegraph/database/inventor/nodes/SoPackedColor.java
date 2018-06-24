@@ -222,7 +222,7 @@ SoPackedColor_doAction(SoAction action)
             SoOverrideElement.setDiffuseColorOverride(state, this, true);
         }
         SoLazyElement.setPacked(state, this,
-                        orderedRGBA.getNum(), orderedRGBA.getValues(0));
+                        orderedRGBA.getNum(), orderedRGBA.getValuesI(0));
 
         if (state.isElementEnabled(SoGLVBOElement.getClassStackIndex(SoGLVBOElement.class))) {
           // update the VBO, no data is passed since that is done by SoColorPacker later on
@@ -281,7 +281,7 @@ public void notify(SoNotList list)
         (list.getLastField() == orderedRGBA) ) {
         transparent = false;
         for(int i = 0; i < orderedRGBA.getNum(); i++){
-            if((orderedRGBA.operator_square_bracket(i) & 0xff) != 0xff){
+            if((orderedRGBA.operator_square_bracketI(i) & 0xff) != 0xff){
                 transparent = true;
                 break;
             }   

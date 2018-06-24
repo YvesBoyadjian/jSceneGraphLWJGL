@@ -431,7 +431,7 @@ SoVertexProperty_doAction(SoAction action)
             SoOverrideElement.setDiffuseColorOverride(state, this, true);
         }                       
         SoLazyElement.setPacked(state, this,
-                orderedRGBA.getNum(), orderedRGBA.getValues(0));
+                orderedRGBA.getNum(), orderedRGBA.getValuesI(0));
     }
     // set material binding 
     SoMaterialBindingElement.set(state, 

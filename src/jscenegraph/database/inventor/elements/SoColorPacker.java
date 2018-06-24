@@ -77,11 +77,11 @@ public class SoColorPacker implements Destroyable {
     int    transpNodeId;
     private int    diffuseNodeId;
     //! array of packed colors, or NULL if empty
-    private Integer[]   packedColors;
+    private int[]   packedColors;
     //! size of packed color array (not necessarily number of valid colors)
     private int     packedArraySize;
 
-    public Integer[] getPackedColors() 
+    public int[] getPackedColors() 
     { return packedColors;}
     
     public boolean diffuseMatch(int nodeId)
@@ -144,7 +144,7 @@ public void
 reallocate(int size)
 {
     //if (packedColors != null) delete [] packedColors; java port
-    packedColors = new Integer[size];
+    packedColors = new int[size];
     packedArraySize = size;
 }
     

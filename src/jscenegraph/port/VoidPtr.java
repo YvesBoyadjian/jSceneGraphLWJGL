@@ -54,6 +54,9 @@ public class VoidPtr implements Destroyable {
 	}
 
 	public IntBuffer toIntBuffer() {
+		if(object instanceof IntBuffer) {
+			return (IntBuffer)object;
+		}
 		return ((ByteBuffer)toBuffer()).asIntBuffer();
 	}
 

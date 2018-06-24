@@ -362,7 +362,7 @@ setTranspElt(SoNode node,
 ////////////////////////////////////////////////////////////////////////
 public void
 setColorIndexElt(SoNode node, 
-         int numIndices,   Integer[] indices)
+         int numIndices,   int[] indices)
 {
     if (!colorIndex) return;
     ivState.numDiffuseColors = numIndices;
@@ -392,7 +392,7 @@ setColorIndexElt(SoNode node,
 ////////////////////////////////////////////////////////////////////////
 protected void
 setPackedElt(SoNode node, int numColors, 
-      Integer[] colors)
+      int[] colors)
 {
     if (colorIndex) return;
     ivState.packedColors        = colors;
@@ -1048,7 +1048,7 @@ reallySend(final SoState state, int bitmask)
                     final float[] col4 = new float[4];                  
                  
                     final byte[] pColors = new byte[4];
-                    SoMachine.DGL_HTON_INT32(pColors, Util.toIntArray(ivState.packedColors));
+                    SoMachine.DGL_HTON_INT32(pColors, /*Util.toIntArray(*/ivState.packedColors/*)*/);
                     gl2.glColor4ubv(pColors,0);
                     if (!(glState.GLColorMaterial != 0 || (glState.GLLightModel == LightModel.BASE_COLOR.getValue()))) {
                         col4[3] =  (ivState.packedColors[0] & 
@@ -2048,7 +2048,7 @@ packColors(SoColorPacker cPacker)
     if (cPacker.getSize() < ivState.numDiffuseColors)
         cPacker.reallocate(ivState.numDiffuseColors);
 
-    Integer[] packedArray = cPacker.getPackedColors();
+    int[] packedArray = cPacker.getPackedColors();
     boolean multTrans = (ivState.numTransparencies >= ivState.numDiffuseColors);    
     int indx = 0;
     int transp = -1;

@@ -85,7 +85,9 @@ example:
  * @author Yves Boyadjian
  *
  */
-public class SoMFUInt32 extends SoMField<Integer> {
+public class SoMFUInt32 extends SoMField<Object> {
+
+	private int[] values;
 
 	@Override
 	protected Integer constructor() {
@@ -97,15 +99,50 @@ public class SoMFUInt32 extends SoMField<Integer> {
 		return new Integer[length];
 	}
 
-	// java port
-	public int[] getValuesInt(int index) {
-		Integer[] valuesInteger = getValues(index);
-		int returnLength = valuesInteger.length;
-		int[] returnValue = new int[returnLength];
-		for(int i=0; i< returnLength;i++) {
-			returnValue[i] = valuesInteger[i];
+
+protected void allocValues(int newNum) {
+	if (values == null) {
+		if (newNum > 0) {
+			values = new int[newNum];
 		}
-		return returnValue;
+	} else {
+		int[] oldValues = values;
+		int i;
+
+		if (newNum > 0) {
+			values = new int[newNum];
+			for (i = 0; i < num && i < newNum; i++)
+				values[i] = oldValues[i];
+		} else
+			values = null;
+		// delete [] oldValues; java port
+	}
+
+	num = maxNum = newNum;
+}
+
+//! Copies value indexed by "from" to value indexed by "to"
+protected void copyValue(int to, int from) {
+	values[to] = values[from];
+}
+
+	
+	// java port
+	public int[] getValuesI(int start) {
+		evaluate();
+		
+		if(start == 0) {
+			return values;
+		}
+
+		int retLength = values.length - start;
+
+		int[] retVal = new int[retLength];
+
+		for (int i = 0; i < retLength; i++) {
+			retVal[i] = (int) values[i + start];
+		}
+		return retVal;
 	}
 
 
@@ -129,17 +166,35 @@ public boolean read1Value(SoInput in, int index)
 	});
 }
 
+/* Set field to have one value */
+public void setValue(int newValue) {
+	makeRoom(1);
+	values[0] = newValue;
+	valueChanged();
+}
+
 /**
  * java port
  * @param start
  * @param colors
  */
-public void setValues(int start, int[] colors) {
-	Integer[] colorsO = new Integer[colors.length];
-	for(int i=0;i<colors.length;i++) {
-		colorsO[i] = colors[i];
+public void setValues(int start, int[] newValues) {
+	int localNum = newValues.length;
+	int newNum = start + localNum, i;
+
+	if (newNum > getNum())
+		makeRoom(newNum);
+
+	for (i = 0; i < localNum; i++) {
+		values[start + i] = newValues[i];
 	}
-	setValues(start,colorsO);
+	valueChanged();
+
+}
+
+public int operator_square_bracketI(int i) {
+	evaluate();
+	return (int) values[i];
 }
 
 }

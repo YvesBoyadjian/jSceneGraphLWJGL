@@ -273,8 +273,8 @@ public class SoLazyElement extends SoElement {
 		                int             numTransparencies;
 		                SbColor[]       diffuseColors;
 		                float[]         transparencies;
-		                Integer[]      packedColors;
-		                Integer[]      colorIndices;
+		                int[]      packedColors;
+		                int[]      colorIndices;
 		                int              transpType;
 		                int            cacheLevelSetBits;
 		                int            cacheLevelSendBits;
@@ -365,8 +365,8 @@ public class SoLazyElement extends SoElement {
     
     protected static SbColor[]      defaultDiffuseColor;
     protected static float[]        defaultTransparency;
-    protected static Integer[]      defaultColorIndices;
-    protected static Integer[]     defaultPackedColor;
+    protected static int[]      defaultColorIndices;
+    protected static int[]     defaultPackedColor;
 		       
 		       
 		       //!Get a Writable instance, so will force a push if needed:
@@ -530,13 +530,13 @@ matches( SoElement element)
 	          //!only be invoked by nodes that use the reallySend method on SoGLLazyElement
 	          //!to establish correct cache dependencies by tracking what was actually
 	          //!sent to GL.
-	     public     Integer[] getPackedPointer()
+	     public     int[] getPackedPointer()
 	              {return ivState.packedColors;}
 	      
 	     public SbColor[]      getDiffusePointer()
 	              {return ivState.diffuseColors; }
 	      
-	     public Integer[]       getColorIndexPointer()
+	     public int[]       getColorIndexPointer()
 	              {return ivState.colorIndices;}
 	      
 	     public float[]         getTransparencyPointer()
@@ -614,9 +614,9 @@ public void init(SoState state)
         defaultDiffuseColor[0] = new SbColor(getDefaultDiffuse());
         defaultTransparency     = new float[1];
         defaultTransparency[0]    = getDefaultTransparency();
-        defaultColorIndices     = new Integer[1];
+        defaultColorIndices     = new int[1];
         defaultColorIndices[0]    = getDefaultColorIndex();
-        defaultPackedColor      = new Integer[1];
+        defaultPackedColor      = new int[1];
         defaultPackedColor[0]     = getDefaultPacked();
     }
     
@@ -729,7 +729,7 @@ getColorIndex(SoState state, int index)
 //
 // Use: public, static
 ////////////////////////////////////////////////////////////////////////
-public static Integer[]
+public static int[]
 getPackedColors(SoState state) 
 { 
     SoLazyElement curElt = getInstance(state);
@@ -743,7 +743,7 @@ getPackedColors(SoState state)
 //
 // Use: public, static
 ////////////////////////////////////////////////////////////////////////
-public static Integer[]
+public static int[]
 getColorIndices(SoState state) 
 {   
     SoLazyElement curElt = getInstance(state);
@@ -903,7 +903,7 @@ setTransparency(SoState state, SoNode node, int numTransp,
 ///////////////////////////////////////////////////////////////////////  
 public static void    
 setPacked(SoState state, SoNode node,
-            int numColors, final Integer[] colors)
+            int numColors, final int[] colors)
 {
     // if someone sets this directly, remove any color VBO
     SoGLVBOElement.unsetVBOIfEnabled(state, SoGLVBOElement.VBOType.COLOR_VBO);
@@ -1137,7 +1137,7 @@ setTranspElt(SoNode node, int numTrans,
 
 public void
 setColorIndexElt( SoNode node,  int numIndices,  
-        Integer[] indices)
+        int[] indices)
 {
 
     ivState.diffuseNodeId = node.getNodeId();
@@ -1177,7 +1177,7 @@ setTranspTypeElt(  int type)
 
 protected void
 setPackedElt( SoNode node,  int numColors,  
-        final Integer[] colors)
+        final int[] colors)
 {  
     ivState.diffuseNodeId   = node.getNodeId();
     ivState.numDiffuseColors = numColors;
@@ -1344,7 +1344,7 @@ setAlphaTestElt(boolean onoff)
 ///////////////////////////////////////////////////////////////////////  
 public void    
 setColorIndices(SoState state, SoNode node, int numIndices, 
-            Integer[] indices)
+            int[] indices)
 {
     // if someone sets this directly, remove any color VBO
     SoGLVBOElement.unsetVBOIfEnabled(state, SoGLVBOElement.VBOType.COLOR_VBO);

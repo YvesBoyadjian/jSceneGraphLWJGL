@@ -589,7 +589,7 @@ void GLRenderVertexArray(SoGLRenderAction action,
   CharPtr texCoordOffset = new CharPtr(texCoordsPtr); 
   CharPtr colorOffset = new CharPtr(colorsPtr);
 
-  Integer[] colors =  SoLazyElement.getPackedColors(state);
+  int[] colors =  SoLazyElement.getPackedColors(state);
   int color = colors[0];
   final SbVec3f normal = new SbVec3f();
   for (int face = 0; face < 6; face++) {

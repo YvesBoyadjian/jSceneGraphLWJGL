@@ -107,6 +107,7 @@ import jscenegraph.database.inventor.SoType.CreateMethod;
 import jscenegraph.database.inventor.errors.SoDebugError;
 import jscenegraph.database.inventor.fields.SoFieldData;
 import jscenegraph.database.inventor.fields.SoMFInt32;
+import jscenegraph.database.inventor.fields.SoMFUInt32;
 import jscenegraph.database.inventor.fields.SoMField;
 import jscenegraph.database.inventor.fields.SoSFEnum;
 import jscenegraph.database.inventor.fields.SoSField;
@@ -518,6 +519,9 @@ public static void SO_NODE_INIT_CLASS(Class className, Class parentClass,String 
        }
        if(field instanceof SoMFInt32) {
     	   ((SoMFInt32)field).setValue((int)defValue[0]);
+       }
+       else if(field instanceof SoMFUInt32) {
+    	   ((SoMFUInt32)field).setValue((int)defValue[0]);
        }
        else {
     	   field.setValue(defValue[0]);

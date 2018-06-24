@@ -148,7 +148,7 @@ public class SoVertexPropertyCache {
             colorIsInVP = true;
             //Check to see if there really is a non-opaque transparency:
             for(int i = 0; i< vp.orderedRGBA.getNum(); i++){
-                if ((vp.orderedRGBA.operator_square_bracket(i) & 0xff) != 0xff){
+                if ((vp.orderedRGBA.operator_square_bracketI(i) & 0xff) != 0xff){
                     transpIsInVP = true;
                     break;
                 }
@@ -239,12 +239,12 @@ public class SoVertexPropertyCache {
         	
         };
         colorStride = Integer.SIZE/Byte.SIZE;// sizeof(int32_t);
-        colorPtr = (Integer[])le.getColorIndexPointer();
+        colorPtr = (int[])le.getColorIndexPointer();
         needFromState |= BitMask.COLOR_FROM_STATE_BITS.getValue();
     } else {
         if ((!colorOverride) &&         
             (vp != null && (numColors = vp.orderedRGBA.getNum()) != 0)) {
-            colorPtr = (Integer[])vp.orderedRGBA.getValues(0);
+            colorPtr = (int[])vp.orderedRGBA.getValuesI(0);
             colorFunc = new SoVPCacheFunc () {
 
 				@Override
@@ -269,7 +269,7 @@ public class SoVertexPropertyCache {
             colorIsInVP = true;
             //Check to see if there really is a non-opaque transparency:
             for(int i = 0; i< vp.orderedRGBA.getNum(); i++){
-                if ((vp.orderedRGBA.operator_square_bracket(i) & 0xff) != 0xff){
+                if ((vp.orderedRGBA.operator_square_bracketI(i) & 0xff) != 0xff){
                     transpIsInVP = true;
                     break;
                 }
@@ -279,7 +279,7 @@ public class SoVertexPropertyCache {
             colorIsInVP = false;
             numColors = le.getNumDiffuse();
             needFromState |= BitMask.COLOR_FROM_STATE_BITS.getValue();
-            colorPtr = (Integer[]) le.getPackedPointer();
+            colorPtr = (int[]) le.getPackedPointer();
             colorFunc = new SoVPCacheFunc () {
 
 				@Override
@@ -547,7 +547,7 @@ public class SoVertexPropertyCache {
         { 
 	  	int offset = (int)((long)colorStride*i/(Integer.SIZE/Byte.SIZE));
 	  	int length = colorPtr.length - offset;
-	  	return VoidPtr.create(Buffers.copyIntBuffer(IntBuffer.wrap(Util.toIntArray(colorPtr), offset, length)));	  	
+	  	return VoidPtr.create(/*Buffers.copyIntBuffer(*/IntBuffer.wrap(colorPtr, offset, length)/*)*/);	  	
 	  }
   public   Buffer getTexCoords(int i) 
         { 
@@ -600,7 +600,7 @@ public class SoVertexPropertyCache {
   public    float[] normalPtr;
   public    int normalStride, numNorms;
   public    SoVPCacheFunc colorFunc;
-  public    Integer[] colorPtr;
+  public    int[] colorPtr;
   public   int colorStride, numColors;
   public    SoVPCacheFunc texCoordFunc;
   public    float[] texCoordPtr;
