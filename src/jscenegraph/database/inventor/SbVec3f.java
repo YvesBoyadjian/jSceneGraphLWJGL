@@ -140,6 +140,20 @@ public class SbVec3f implements Cloneable, Mutable {
 				   
 				  }
 	
+	public SbVec3f operator_cross_equal(SbVec3f v) {
+		
+		  float x = vec[1] * v.vec[2] - vec[2] * v.vec[1];
+		  float y = vec[2] * v.vec[0] - vec[0] * v.vec[2];
+		  float z = vec[0] * v.vec[1] - vec[1] * v.vec[0];
+		  
+		  vec[0] = x;
+		  vec[1] = y;
+		  vec[2] = z;
+		
+		return this;
+	}
+
+	
 	// Returns dot (inner) product of vector and another vector. 
 	public float dot(SbVec3f v) {
 		

@@ -67,6 +67,7 @@ import jscenegraph.database.inventor.fields.SoFieldData;
 import jscenegraph.database.inventor.fields.SoMFInt32;
 import jscenegraph.database.inventor.misc.SoNotList;
 import jscenegraph.database.inventor.misc.SoNotRec;
+import jscenegraph.port.Array;
 import jscenegraph.port.Destroyable;
 
 
@@ -258,11 +259,11 @@ notify(SoNotList list)
     int                     i, numIndices, numUsed;
     int[]                       indices;
     SoCoordinateElement   ce = null;
-     SbVec3f[]               vpCoords = null;
+    Array<SbVec3f>               vpCoords = null;
 
     SoVertexProperty vp = (SoVertexProperty )vertexProperty.getValue();
     if (vp != null && vp.vertex.getNum() > 0) {
-        vpCoords = vp.vertex.getValues(0);
+        vpCoords = vp.vertex.getValuesArray(0);
     } else {
         ce = SoCoordinateElement.getInstance(action.getState());
     }
@@ -280,7 +281,7 @@ notify(SoNotList list)
         // Look only at non-negative index values
         if (indices[i] >= 0) {
             SbVec3f v = (ce != null ? ce.get3((int) indices[i]) :
-                                vpCoords[indices[i]]);
+                                vpCoords.get(indices[i]));
             box.extendBy(v);
             center.operator_add_equal(v);
             numUsed++;
