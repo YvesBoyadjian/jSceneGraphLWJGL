@@ -66,6 +66,7 @@ import jscenegraph.database.inventor.SbBox3f;
 import jscenegraph.database.inventor.SbMatrix;
 import jscenegraph.database.inventor.SbRotation;
 import jscenegraph.database.inventor.SbVec2f;
+import jscenegraph.database.inventor.SbVec2fSingle;
 import jscenegraph.database.inventor.SbVec2s;
 import jscenegraph.database.inventor.SbVec3f;
 import jscenegraph.database.inventor.SbViewVolume;
@@ -265,8 +266,8 @@ pointAt(final SbVec3f targetPoint)
 {
     final SbVec3f     d = new SbVec3f(targetPoint.operator_minus(position.getValue()));
 
-    final SbRotation  yRot = new SbRotation(new SbVec3f(0,1,0), (float)Math.atan2(-d.getValue()[0], -d.getValue()[2]));
-    final SbRotation  xRot = new SbRotation(new SbVec3f(1,0,0), (float)Math.atan2(d.getValue()[1], Math.sqrt(d.getValue()[0]*d.getValue()[0] + d.getValue()[2]*d.getValue()[2])));
+    final SbRotation  yRot = new SbRotation(new SbVec3f(0,1,0), (float)Math.atan2(-d.getValueRead()[0], -d.getValueRead()[2]));
+    final SbRotation  xRot = new SbRotation(new SbVec3f(1,0,0), (float)Math.atan2(d.getValueRead()[1], Math.sqrt(d.getValueRead()[0]*d.getValueRead()[0] + d.getValueRead()[2]*d.getValueRead()[2])));
 
     orientation.setValue(xRot.operator_mul(yRot));
 }
@@ -554,7 +555,7 @@ GLRender(SoGLRenderAction action)
     final SbViewportRegion    croppedReg = new SbViewportRegion();
     final SbViewVolume        viewVol = new SbViewVolume();
     final SbMatrix            viewMat = new SbMatrix(), projMat = new SbMatrix();
-    final SbVec2f             uaOrigin = new SbVec2f(), uaSize = new SbVec2f();
+    final SbVec2fSingle             uaOrigin = new SbVec2fSingle(), uaSize = new SbVec2fSingle();
     final SbVec3f             jitterAmount = new SbVec3f();
     final boolean[]              changeRegion = new boolean[1];
     final SoState             state = action.getState();
@@ -610,7 +611,7 @@ jitter(int numPasses, int curPass,
 ////////////////////////////////////////////////////////////////////////
 {
     // Get the current sample point within the pixel
-    final SbVec2f samplePoint = new SbVec2f();
+    final SbVec2fSingle samplePoint = new SbVec2fSingle();
     getJitterSample(numPasses, curPass, samplePoint);
 
     // Compute the jitter amount for the projection matrix. This
@@ -618,9 +619,9 @@ jitter(int numPasses, int curPass,
     // +1 in x and y. In this space, the size of a pixel is 2/width by
     // 2/height.
     final SbVec2s vpSize = vpReg.getViewportSizePixels();
-    jitterAmount.getValue()[0] = samplePoint.getValue()[0] * 2.0f / (float) vpSize.getValue()[0];
-    jitterAmount.getValue()[1] = samplePoint.getValue()[1] * 2.0f / (float) vpSize.getValue()[1];
-    jitterAmount.getValue()[2] = 0.0f;
+    jitterAmount.setValue(0, samplePoint.getValue()[0] * 2.0f / (float) vpSize.getValue()[0]);
+    jitterAmount.setValue(1, samplePoint.getValue()[1] * 2.0f / (float) vpSize.getValue()[1]);
+    jitterAmount.setValue(2, 0.0f);
 }
 
 // These arrays define filter kernels to be used when the total

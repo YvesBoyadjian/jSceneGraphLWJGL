@@ -55,7 +55,9 @@
 package jscenegraph.database.inventor.elements;
 
 import jscenegraph.database.inventor.SbVec2f;
+import jscenegraph.database.inventor.SbVec2fSingle;
 import jscenegraph.database.inventor.SbVec3f;
+import jscenegraph.database.inventor.SbVec3fSingle;
 import jscenegraph.database.inventor.errors.SoDebugError;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.database.inventor.nodes.SoNode;
@@ -90,8 +92,8 @@ public class SoProfileCoordinateElement extends SoReplacedElement {
   private
 	    static SbVec2f      defaultCoord2;
 
-  private final SbVec2f             convert2 = new SbVec2f();       //!< To convert from 3-D to 2-D
-  private final SbVec3f             convert3 = new SbVec3f();       //!< To convert from 2-D to 3-D
+  private final SbVec2fSingle             convert2 = new SbVec2fSingle();       //!< To convert from 3-D to 2-D
+  private final SbVec3fSingle             convert3 = new SbVec3fSingle();       //!< To convert from 2-D to 3-D
 	
     //! Returns the number of coordinate points in an instance
     public int             getNum()           { return numCoords; }
@@ -220,8 +222,8 @@ public SbVec2f get2(int index)
         SoProfileCoordinateElement elt = (SoProfileCoordinateElement ) this;
         final SbVec3f           c3  = coords3[index];
 
-        elt.convert2.getValue()[0] = c3.getValue()[0] / c3.getValue()[2];
-        elt.convert2.getValue()[1] = c3.getValue()[1] / c3.getValue()[2];
+        elt.convert2.getValue()[0] = c3.getValueRead()[0] / c3.getValueRead()[2];
+        elt.convert2.getValue()[1] = c3.getValueRead()[1] / c3.getValueRead()[2];
 
         return convert2;
     }
@@ -250,8 +252,8 @@ public SbVec3f get3(int index)
         SoProfileCoordinateElement elt = (SoProfileCoordinateElement ) this;
         final SbVec2f           c2  = coords2[index];
 
-        elt.convert3.getValue()[0] = c2.getValue()[0];
-        elt.convert3.getValue()[1] = c2.getValue()[1];
+        elt.convert3.getValue()[0] = c2.getValueRead()[0];
+        elt.convert3.getValue()[1] = c2.getValueRead()[1];
         elt.convert3.getValue()[2] = 0.0f;
 
         return convert3;

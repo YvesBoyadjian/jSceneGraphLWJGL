@@ -60,6 +60,7 @@ import jscenegraph.database.inventor.SbMatrix;
 import jscenegraph.database.inventor.SbName;
 import jscenegraph.database.inventor.SbRotation;
 import jscenegraph.database.inventor.SbVec2f;
+import jscenegraph.database.inventor.SbVec2fSingle;
 import jscenegraph.database.inventor.SbVec2s;
 import jscenegraph.database.inventor.SbVec3f;
 import jscenegraph.database.inventor.SbViewVolume;
@@ -143,7 +144,7 @@ public class SoRayPickAction extends SoPickAction {
 	private boolean              rayWasComputed; 
     private boolean              pickAll;        
     private final SbVec2s             VPPoint = new SbVec2s();
-    private final SbVec2f             normVPPoint = new SbVec2f();    //!< Point in normalized vp coordinates
+    private final SbVec2fSingle             normVPPoint = new SbVec2fSingle();    //!< Point in normalized vp coordinates
     private boolean              normPointSet;   
     private float               VPRadius;   
     private final SbMatrix            objToWorld = new SbMatrix();     
@@ -923,16 +924,16 @@ rayDistance(final SbVec3f start, final SbVec3f direction,
     float       max, c;
     int         which;
 
-    max = Math.abs(direction.getValue()[0]);
+    max = Math.abs(direction.getValueRead()[0]);
     which = 0;
 
-    c = Math.abs(direction.getValue()[1]);
+    c = Math.abs(direction.getValueRead()[1]);
     if (c > max) {
         max = c;
         which = 1;
     }
 
-    c = Math.abs(direction.getValue()[2]);
+    c = Math.abs(direction.getValueRead()[2]);
     if (c > max) {
         max = c;
         which = 2;
@@ -942,7 +943,7 @@ rayDistance(final SbVec3f start, final SbVec3f direction,
     if (max == 0.0)
         return 0.0f;
 
-    return (point.getValue()[which] - start.getValue()[which]) / direction.getValue()[which];
+    return (point.getValueRead()[which] - start.getValueRead()[which]) / direction.getValueRead()[which];
 
 //#undef ABS
 }

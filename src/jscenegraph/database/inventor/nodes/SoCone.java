@@ -66,6 +66,7 @@ import jscenegraph.database.inventor.SbPlane;
 import jscenegraph.database.inventor.SbVec2f;
 import jscenegraph.database.inventor.SbVec2s;
 import jscenegraph.database.inventor.SbVec3f;
+import jscenegraph.database.inventor.SbVec3fSingle;
 import jscenegraph.database.inventor.SbVec4f;
 import jscenegraph.database.inventor.SoPickedPoint;
 import jscenegraph.database.inventor.SoPrimitiveVertex;
@@ -342,7 +343,7 @@ public class SoCone extends SoShape {
   int                 curParts =(parts.isIgnored() ? Part.ALL.getValue() : parts.getValue());
   final SbMatrix            matrix = new SbMatrix(), matrix2 = new SbMatrix();
   final float[]               radius = new float[1], halfHeight = new float[1];
-  final SbVec3f             enterPoint = new SbVec3f(), exitPoint = new SbVec3f(), objectPoint = new SbVec3f(), normal = new SbVec3f();
+  final SbVec3fSingle             enterPoint = new SbVec3fSingle(), exitPoint = new SbVec3fSingle(), objectPoint = new SbVec3fSingle(), normal = new SbVec3fSingle();
   final SbVec4f             texCoord = new SbVec4f();
   SoPickedPoint       pp;
   SoConeDetail        detail;
@@ -380,7 +381,7 @@ public class SoCone extends SoShape {
       // (at y = -1). Also check if the intersection is between the
       // near and far clipping planes.
 
-      if (enterPoint.getValue()[1] <= 0.0 && enterPoint.getValue()[1] >= -1.0) {
+      if (enterPoint.getValueRead()[1] <= 0.0 && enterPoint.getValueRead()[1] >= -1.0) {
 
         numHits++;
 
@@ -394,16 +395,16 @@ public class SoCone extends SoShape {
             // (First, translate the cone point back down as if the
             // center were at the origin, making the math easier.)
             objectPoint.getValue()[1] -= halfHeight[0];
-            normal.setValue(-objectPoint.getValue()[0] * objectPoint.getValue()[1],
-              objectPoint.getValue()[0] * objectPoint.getValue()[0] + 
-              objectPoint.getValue()[2] * objectPoint.getValue()[2],
-              -objectPoint.getValue()[1] * objectPoint.getValue()[2]);
+            normal.setValue(-objectPoint.getValueRead()[0] * objectPoint.getValueRead()[1],
+              objectPoint.getValueRead()[0] * objectPoint.getValueRead()[0] + 
+              objectPoint.getValueRead()[2] * objectPoint.getValueRead()[2],
+              -objectPoint.getValueRead()[1] * objectPoint.getValueRead()[2]);
             normal.normalize();
             pp.setObjectNormal(normal);
 
-            texCoord.setValue((float)Math.atan2(enterPoint.getValue()[0], enterPoint.getValue()[2])
+            texCoord.setValue((float)Math.atan2(enterPoint.getValueRead()[0], enterPoint.getValueRead()[2])
               * (1.0f / (2.0f * (float)Math.PI)) + 0.5f,
-              enterPoint.getValue()[1] + 1.0f,
+              enterPoint.getValueRead()[1] + 1.0f,
               0.0f, 1.0f);
             pp.setObjectTextureCoords(texCoord);
 
@@ -418,7 +419,7 @@ public class SoCone extends SoShape {
       // Convert the point into object space from "canonical" space
       matrix.multVecMatrix(exitPoint, objectPoint);
 
-      if (exitPoint.getValue()[1] <= 0.0 && exitPoint.getValue()[1] >= -1.0) {
+      if (exitPoint.getValueRead()[1] <= 0.0 && exitPoint.getValueRead()[1] >= -1.0) {
 
         numHits++;
 
@@ -432,16 +433,16 @@ public class SoCone extends SoShape {
             // (First, translate the cone point back down as if the
             // apex were at the origin, making the math easier.)
             objectPoint.getValue()[1] -= halfHeight[0];
-            normal.setValue(-objectPoint.getValue()[0] * objectPoint.getValue()[1],
-              objectPoint.getValue()[0] * objectPoint.getValue()[0] + 
-              objectPoint.getValue()[2] * objectPoint.getValue()[2],
-              -objectPoint.getValue()[1] * objectPoint.getValue()[2]);
+            normal.setValue(-objectPoint.getValueRead()[0] * objectPoint.getValueRead()[1],
+              objectPoint.getValueRead()[0] * objectPoint.getValueRead()[0] + 
+              objectPoint.getValueRead()[2] * objectPoint.getValueRead()[2],
+              -objectPoint.getValueRead()[1] * objectPoint.getValueRead()[2]);
             normal.normalize();
             pp.setObjectNormal(normal);
 
-            texCoord.setValue((float)Math.atan2(exitPoint.getValue()[0], exitPoint.getValue()[2])
+            texCoord.setValue((float)Math.atan2(exitPoint.getValueRead()[0], exitPoint.getValueRead()[2])
               * (1.0f / (2.0f * (float)Math.PI)) + 0.5f,
-              exitPoint.getValue()[1] + 1.0f,
+              exitPoint.getValueRead()[1] + 1.0f,
               0.0f, 1.0f);
             pp.setObjectTextureCoords(texCoord);
 
@@ -468,8 +469,8 @@ public class SoCone extends SoShape {
 
       // See if the intersection is within the correct radius
       // and is within the clipping planes
-      float distFromYAxisSquared = (enterPoint.getValue()[0] * enterPoint.getValue()[0] +
-        enterPoint.getValue()[2] * enterPoint.getValue()[2]);
+      float distFromYAxisSquared = (enterPoint.getValueRead()[0] * enterPoint.getValueRead()[0] +
+        enterPoint.getValueRead()[2] * enterPoint.getValueRead()[2]);
 
       if (distFromYAxisSquared <= 1.0 &&
         action.isBetweenPlanes(objectPoint) &&
@@ -477,8 +478,8 @@ public class SoCone extends SoShape {
 
           pp.setObjectNormal(norm);
 
-          texCoord.setValue(0.5f + enterPoint.getValue()[0] / 2.0f,
-            0.5f + enterPoint.getValue()[2] / 2.0f,
+          texCoord.setValue(0.5f + enterPoint.getValueRead()[0] / 2.0f,
+            0.5f + enterPoint.getValueRead()[2] / 2.0f,
             0.0f, 1.0f);
           pp.setObjectTextureCoords(texCoord);
 
@@ -514,7 +515,7 @@ public class SoCone extends SoShape {
     float               outerRadius, innerRadius, dRadius;
     final SbVec2f[][]             baseCoords = new SbVec2f[1][];
     final SbVec3f[][]             sideNormals = new SbVec3f[1][];
-    final SbVec3f pt = new SbVec3f(), norm = new SbVec3f();
+    final SbVec3fSingle pt = new SbVec3fSingle(), norm = new SbVec3fSingle();
     final float[]               radius = new float[1], halfHeight = new float[1];
     final SbVec4f             tex = new SbVec4f();
     boolean              genTexCoords = false;
@@ -588,8 +589,8 @@ public class SoCone extends SoShape {
 		pv.setNormal(sideNormals[0][side]);
 
 		// Point at bottom of section
-		pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			    outerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			    outerRadius * baseCoords[0][side].getValueRead()[1]);
 		pt.getValue()[0] *= radius[0];
 		pt.getValue()[1] *= halfHeight[0];
 		pt.getValue()[2] *= radius[0];
@@ -604,8 +605,8 @@ public class SoCone extends SoShape {
 		shapeVertex(pv);
 
 		// Point at top of section
-		pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			    innerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			    innerRadius * baseCoords[0][side].getValueRead()[1]);
 		pt.getValue()[0] *= radius[0];
 		pt.getValue()[1] *= halfHeight[0];
 		pt.getValue()[2] *= radius[0];
@@ -628,8 +629,8 @@ public class SoCone extends SoShape {
 	    pv.setNormal(sideNormals[0][side]);
 
 	    // Point at bottom of section
-	    pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			outerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			outerRadius * baseCoords[0][side].getValueRead()[1]);
 	    pt.getValue()[0] *= radius[0];
 	    pt.getValue()[1] *= halfHeight[0];
 	    pt.getValue()[2] *= radius[0];
@@ -644,8 +645,8 @@ public class SoCone extends SoShape {
 	    shapeVertex(pv);
 
 	    // Point at top of section
-	    pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			innerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			innerRadius * baseCoords[0][side].getValueRead()[1]);
 	    pt.getValue()[0] *= radius[0];
 	    pt.getValue()[1] *= halfHeight[0];
 	    pt.getValue()[2] *= radius[0];
@@ -706,13 +707,13 @@ public class SoCone extends SoShape {
 
 		// Send all vertices around ring
 		for (side = 0; side < numSides[0]; side++) {
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    pt.getValue()[0] *= radius[0];
 		    pt.getValue()[2] *= radius[0];
 		    if (genTexCoords) {
-			tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-			tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+			tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+			tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		    }
 		    else
 			tex.copyFrom( tce.get(pt, norm));
@@ -721,13 +722,13 @@ public class SoCone extends SoShape {
 		    shapeVertex(pv);
 		}
 		// Send first vertex again
-		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValueRead()[1];
 		pt.getValue()[0] *= radius[0];
 		pt.getValue()[2] *= radius[0];
 		if (genTexCoords) {
-		    tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-		    tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+		    tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+		    tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		}
 		else
 		    tex.copyFrom( tce.get(pt, norm));
@@ -745,26 +746,26 @@ public class SoCone extends SoShape {
 		// Go in reverse order so that vertex ordering is correct
 		for (side = numSides[0] - 1; side >= 0; side--) {
 		    // Send points on outer and inner rings
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    pt.getValue()[0] *= radius[0];
 		    pt.getValue()[2] *= radius[0];
 		    if (genTexCoords) {
-			tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-			tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+			tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+			tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		    }
 		    else
 			tex.copyFrom( tce.get(pt, norm));
 		    pv.setPoint(pt);
 		    pv.setTextureCoords(tex);
 		    shapeVertex(pv);
-		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		    pt.getValue()[0] *= radius[0];
 		    pt.getValue()[2] *= radius[0];
 		    if (genTexCoords) {
-			tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-			tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+			tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+			tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		    }
 		    else
 			tex.copyFrom(tce.get(pt, norm));
@@ -775,26 +776,26 @@ public class SoCone extends SoShape {
 
 		// Join end of strip back to beginning
 		side = numSides[0] - 1;
-		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		pt.getValue()[0] *= radius[0];
 		pt.getValue()[2] *= radius[0];
 		if (genTexCoords) {
-		    tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-		    tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+		    tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+		    tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		}
 		else
 		    tex.copyFrom( tce.get(pt, norm));
 		pv.setPoint(pt);
 		pv.setTextureCoords(tex);
 		shapeVertex(pv);
-		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		pt.getValue()[0] *= radius[0];
 		pt.getValue()[2] *= radius[0];
 		if (genTexCoords) {
-		    tex.getValue()[0] = BOT_TEX_S(pt.getValue()[0]);
-		    tex.getValue()[1] = BOT_TEX_T(pt.getValue()[2]);
+		    tex.getValue()[0] = BOT_TEX_S(pt.getValueRead()[0]);
+		    tex.getValue()[1] = BOT_TEX_T(pt.getValueRead()[2]);
 		}
 		else
 		    tex.copyFrom( tce.get(pt, norm));
@@ -1009,9 +1010,9 @@ public class SoCone extends SoShape {
  // Macro to multiply out coordinates to avoid extra GL calls:
  //
  private final SbVec3f SCALE(SbVec3f pt, SbVec3f scale, SbVec3f tmp){
-	 tmp.getValue()[0] = (pt).getValue()[0]*scale.getValue()[0];
-	 tmp.getValue()[1] = (pt).getValue()[1]*scale.getValue()[1];
-	 tmp.getValue()[2] = (pt).getValue()[2]*scale.getValue()[2];
+	 tmp.setValue(0, (pt).getValueRead()[0]*scale.getValueRead()[0]);
+	 tmp.setValue(1, (pt).getValueRead()[1]*scale.getValueRead()[1]);
+	 tmp.setValue(2, (pt).getValueRead()[2]*scale.getValueRead()[2]);
 	 return tmp;
  }
     
@@ -1027,12 +1028,12 @@ public class SoCone extends SoShape {
     //! These render the cone
     private void                GLRenderGeneric(SoGLRenderAction action,
                                         boolean sendNormals, boolean doTextures) {
-    final SbVec3f scale = new SbVec3f(), tmp = new SbVec3f();
+    final SbVec3fSingle scale = new SbVec3fSingle(), tmp = new SbVec3fSingle();
     final float[] s1 = new float[1], s2 = new float[1];
     getSize(s1, s2);
     scale.getValue()[0] = s1[0];
     scale.getValue()[1] = s2[0];
-    scale.getValue()[2] = scale.getValue()[0];
+    scale.getValue()[2] = scale.getValueRead()[0];
 
     boolean              materialPerPart;
     int                 curParts, side, section;
@@ -1042,7 +1043,7 @@ public class SoCone extends SoShape {
     float               outerRadius, innerRadius, dRadius;
     final SbVec2f[][]             baseCoords = new SbVec2f[1][];
     final SbVec3f[][]             sideNormals = new SbVec3f[1][];
-    final SbVec3f pt = new SbVec3f(), norm = new SbVec3f();
+    final SbVec3fSingle pt = new SbVec3fSingle(), norm = new SbVec3fSingle();
     final SoMaterialBundle    mb = new SoMaterialBundle(action);
 
     SoMaterialBindingElement.Binding mbe =
@@ -1092,15 +1093,15 @@ public class SoCone extends SoShape {
 		    gl2.glNormal3fv(sideNormals[0][side].getValueGL());
 
 		// Point at bottom of section
-		pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			    outerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			    outerRadius * baseCoords[0][side].getValueRead()[1]);
 		if (doTextures)
 		    gl2.glTexCoord2f(s, tBot);
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		// Point at top of section
-		pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			    innerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			    innerRadius * baseCoords[0][side].getValueRead()[1]);
 		if (doTextures)
 		    gl2.glTexCoord2f(s, tTop);
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
@@ -1115,15 +1116,15 @@ public class SoCone extends SoShape {
 		gl2.glNormal3fv(sideNormals[0][side].getValueGL());
 
 	    // Point at bottom of section
-	    pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			outerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			outerRadius * baseCoords[0][side].getValueRead()[1]);
 	    if (doTextures)
 		gl2.glTexCoord2f(s, tBot);
 	    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 	    // Point at top of section
-	    pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			innerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			innerRadius * baseCoords[0][side].getValueRead()[1]);
 	    if (doTextures)
 		gl2.glTexCoord2f(s, tTop);
 	    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
@@ -1171,17 +1172,17 @@ public class SoCone extends SoShape {
 
 		// Send all vertices around ring
 		for (side = 0; side < numSides[0]; side++) {
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    if (doTextures)
-			gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+			gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 		}
 		// Send first vertex again
-		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValueRead()[1];
 		if (doTextures)
-		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		gl2.glEnd();
@@ -1194,29 +1195,29 @@ public class SoCone extends SoShape {
 		// Go in reverse order so that vertex ordering is correct
 		for (side = numSides[0] - 1; side >= 0; side--) {
 		    // Send points on outer and inner rings
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    if (doTextures)
-			gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+			gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
-		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		    if (doTextures)
-			gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+			gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 		}
 
 		// Join end of strip back to beginning
 		side = numSides[0] - 1;
-		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		if (doTextures)
-		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
-		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		if (doTextures)
-		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2]));
+		    gl2.glTexCoord2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2]));
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		gl2.glEnd();
@@ -1237,12 +1238,12 @@ public class SoCone extends SoShape {
 //Use: private
 
     private void                GLRenderNvertTnone(SoGLRenderAction action) {
-    	    final SbVec3f scale = new SbVec3f(), tmp = new SbVec3f();
+    	    final SbVec3fSingle scale = new SbVec3fSingle(), tmp = new SbVec3fSingle();
     	    final float[] s1 = new float[1], s2 = new float[1];
     getSize(s1, s2);
     scale.getValue()[0] = s1[0];
     scale.getValue()[1] = s2[0];
-    scale.getValue()[2] = scale.getValue()[0];
+    scale.getValue()[2] = scale.getValueRead()[0];
 
     boolean              materialPerPart;
     int                 curParts, side, section;
@@ -1251,7 +1252,7 @@ public class SoCone extends SoShape {
     float               outerRadius, innerRadius, dRadius;
     final SbVec2f[][]             baseCoords = new SbVec2f[1][];
     final SbVec3f[][]             sideNormals = new SbVec3f[1][];
-    final SbVec3f pt = new SbVec3f(), norm = new SbVec3f();
+    final SbVec3fSingle pt = new SbVec3fSingle(), norm = new SbVec3fSingle();
     final SoMaterialBundle    mb = new SoMaterialBundle(action);
 
     SoMaterialBindingElement.Binding mbe =
@@ -1295,13 +1296,13 @@ public class SoCone extends SoShape {
 		gl2.glNormal3fv(sideNormals[0][side].getValueGL());
 
 		// Point at bottom of section
-		pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			    outerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			    outerRadius * baseCoords[0][side].getValueRead()[1]);
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		// Point at top of section
-		pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			    innerRadius * baseCoords[0][side].getValue()[1]);
+		pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			    innerRadius * baseCoords[0][side].getValueRead()[1]);
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 	    }
 
@@ -1311,13 +1312,13 @@ public class SoCone extends SoShape {
 	    gl2.glNormal3fv(sideNormals[0][side].getValueGL());
 
 	    // Point at bottom of section
-	    pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-			outerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+			outerRadius * baseCoords[0][side].getValueRead()[1]);
 	    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 	    // Point at top of section
-	    pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-			innerRadius * baseCoords[0][side].getValue()[1]);
+	    pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+			innerRadius * baseCoords[0][side].getValueRead()[1]);
 	    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 	    gl2.glEnd();
@@ -1358,13 +1359,13 @@ public class SoCone extends SoShape {
 
 		// Send all vertices around ring
 		for (side = 0; side < numSides[0]; side++) {
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 		}
 		// Send first vertex again
-		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][0].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][0].getValueRead()[1];
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		gl2.glEnd();
@@ -1377,21 +1378,21 @@ public class SoCone extends SoShape {
 		// Go in reverse order so that vertex ordering is correct
 		for (side = numSides[0] - 1; side >= 0; side--) {
 		    // Send points on outer and inner rings
-		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
-		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		    pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		    pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		    gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 		}
 
 		// Join end of strip back to beginning
 		side = numSides[0] - 1;
-		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
-		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+		pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+		pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
 		gl2.glVertex3fv(SCALE(pt,scale,tmp).getValueGL());
 
 		gl2.glEnd();
@@ -1408,12 +1409,12 @@ public class SoCone extends SoShape {
     private void                GLRenderVertexArray(SoGLRenderAction action,
                                             boolean sendNormals, boolean doTextures) {
     	  SoState state = action.getState();
-  final SbVec3f scale = new SbVec3f(), tmp = new SbVec3f();
+  final SbVec3fSingle scale = new SbVec3fSingle(), tmp = new SbVec3fSingle();
   final float[] s1 = new float[1], s2 = new float[1];
   getSize(s1, s2);
   scale.getValue()[0] = s1[0];
   scale.getValue()[1] = s2[0];
-  scale.getValue()[2] = scale.getValue()[0];
+  scale.getValue()[2] = scale.getValueRead()[0];
 
   int                 curParts, side, section;
   final int[] numSides = new int[1], numSections = new int[1];
@@ -1422,7 +1423,7 @@ public class SoCone extends SoShape {
   float               outerRadius, innerRadius, dRadius;
   final SbVec2f[][]             baseCoords = new SbVec2f[1][];
   final SbVec3f[][]             sideNormals = new SbVec3f[1][];
-  final SbVec3f pt = new SbVec3f(), norm = new SbVec3f();
+  final SbVec3fSingle pt = new SbVec3fSingle(), norm = new SbVec3fSingle();
   final SoMaterialBundle    mb = new SoMaterialBundle(action);
 
   curParts = (parts.isIgnored() ? Part.ALL.getValue() : parts.getValue());
@@ -1491,8 +1492,8 @@ public class SoCone extends SoShape {
             currentNormal = sideNormals[0][side];
 
           // Point at bottom of section
-          pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-            outerRadius * baseCoords[0][side].getValue()[1]);
+          pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+            outerRadius * baseCoords[0][side].getValueRead()[1]);
           if (doTextures)
             texCoords.add(new SbVec2f(s, tBot));
           if (sendNormals) { normals.add(currentNormal); }
@@ -1502,8 +1503,8 @@ public class SoCone extends SoShape {
           }
 
           // Point at top of section
-          pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-            innerRadius * baseCoords[0][side].getValue()[1]);
+          pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+            innerRadius * baseCoords[0][side].getValueRead()[1]);
           if (doTextures)
             texCoords.add(new SbVec2f(s, tTop));
           if (sendNormals) { normals.add(currentNormal); }
@@ -1522,8 +1523,8 @@ public class SoCone extends SoShape {
           currentNormal = sideNormals[0][side];
 
         // Point at bottom of section
-        pt.setValue(outerRadius * baseCoords[0][side].getValue()[0], yBot,
-          outerRadius * baseCoords[0][side].getValue()[1]);
+        pt.setValue(outerRadius * baseCoords[0][side].getValueRead()[0], yBot,
+          outerRadius * baseCoords[0][side].getValueRead()[1]);
         if (doTextures)
           texCoords.add(new SbVec2f(s, tBot));
         if (sendNormals) { normals.add(currentNormal); }
@@ -1531,8 +1532,8 @@ public class SoCone extends SoShape {
         winding = ADD_TRIANGLE( points, indices, winding);
 
         // Point at top of section
-        pt.setValue(innerRadius * baseCoords[0][side].getValue()[0], yTop,
-        innerRadius * baseCoords[0][side].getValue()[1]);
+        pt.setValue(innerRadius * baseCoords[0][side].getValueRead()[0], yTop,
+        innerRadius * baseCoords[0][side].getValueRead()[1]);
         if (doTextures)
           texCoords.add(new SbVec2f(s, tTop));
         if (sendNormals) { normals.add(currentNormal); }
@@ -1578,10 +1579,10 @@ public class SoCone extends SoShape {
 
           // Send all vertices around ring
           for (side = 0; side < numSides[0]; side++) {
-            pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-            pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+            pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+            pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
             if (doTextures)
-              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
             if (sendNormals) { normals.add(currentNormal); }
             points.add(SCALE(pt,scale,tmp));
             if (side>0) {
@@ -1589,10 +1590,10 @@ public class SoCone extends SoShape {
             }
           }
           // Send first vertex again
-          pt.getValue()[0] = outerRadius * baseCoords[0][0].getValue()[0];
-          pt.getValue()[2] = outerRadius * baseCoords[0][0].getValue()[1];
+          pt.getValue()[0] = outerRadius * baseCoords[0][0].getValueRead()[0];
+          pt.getValue()[2] = outerRadius * baseCoords[0][0].getValueRead()[1];
           if (doTextures)
-            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
           if (sendNormals) { normals.add(currentNormal); }
           points.add(SCALE(pt,scale,tmp));
           ADD_CENTER_TRIANGLE( points, indices, centerIndex);
@@ -1605,20 +1606,20 @@ public class SoCone extends SoShape {
           // Go in reverse order so that vertex ordering is correct
           for (side = numSides[0] - 1; side >= 0; side--) {
             // Send points on outer and inner rings
-            pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-            pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+            pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+            pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
             if (doTextures)
-              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
             if (sendNormals) { normals.add(currentNormal); }
             points.add(SCALE(pt,scale,tmp));
             if (side<numSides[0] - 1) {
               winding = ADD_TRIANGLE( points, indices, winding);
             }
 
-            pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-            pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+            pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+            pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
             if (doTextures)
-              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+              texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
             if (sendNormals) { normals.add(currentNormal); }
             points.add(SCALE(pt,scale,tmp));
             if (side<numSides[0] - 1) {
@@ -1628,18 +1629,18 @@ public class SoCone extends SoShape {
 
           // Join end of strip back to beginning
           side = numSides[0] - 1;
-          pt.getValue()[0] = outerRadius * baseCoords[0][side].getValue()[0];
-          pt.getValue()[2] = outerRadius * baseCoords[0][side].getValue()[1];
+          pt.getValue()[0] = outerRadius * baseCoords[0][side].getValueRead()[0];
+          pt.getValue()[2] = outerRadius * baseCoords[0][side].getValueRead()[1];
           if (doTextures)
-            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
           if (sendNormals) { normals.add(currentNormal); }
           points.add(SCALE(pt,scale,tmp));
           winding = ADD_TRIANGLE( points, indices, winding);
 
-          pt.getValue()[0] = innerRadius * baseCoords[0][side].getValue()[0];
-          pt.getValue()[2] = innerRadius * baseCoords[0][side].getValue()[1];
+          pt.getValue()[0] = innerRadius * baseCoords[0][side].getValueRead()[0];
+          pt.getValue()[2] = innerRadius * baseCoords[0][side].getValueRead()[1];
           if (doTextures)
-            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValue()[0]), BOT_TEX_T(pt.getValue()[2])));
+            texCoords.add(new SbVec2f(BOT_TEX_S(pt.getValueRead()[0]), BOT_TEX_T(pt.getValueRead()[2])));
           if (sendNormals) { normals.add(currentNormal); }
           points.add(SCALE(pt,scale,tmp));
           winding = ADD_TRIANGLE( points, indices, winding);
@@ -1664,19 +1665,19 @@ public class SoCone extends SoShape {
     for (int i = 0;i<numVertices;i++) {
       int index = indices.get(i);
       final SbVec3f point = points.get(index);
-      verticesPtr.asterisk( point.getValue()[0]); verticesPtr.plusPlus();
-      verticesPtr.asterisk( point.getValue()[1]); verticesPtr.plusPlus();
-      verticesPtr.asterisk( point.getValue()[2]); verticesPtr.plusPlus();
+      verticesPtr.asterisk( point.getValueRead()[0]); verticesPtr.plusPlus();
+      verticesPtr.asterisk( point.getValueRead()[1]); verticesPtr.plusPlus();
+      verticesPtr.asterisk( point.getValueRead()[2]); verticesPtr.plusPlus();
       if (sendNormals) {
         final SbVec3f normal = normals.get(index);
-        normalsPtr.asterisk( normal.getValue()[0]); normalsPtr.plusPlus();
-        normalsPtr.asterisk( normal.getValue()[1]); normalsPtr.plusPlus();
-        normalsPtr.asterisk( normal.getValue()[2]); normalsPtr.plusPlus();
+        normalsPtr.asterisk( normal.getValueRead()[0]); normalsPtr.plusPlus();
+        normalsPtr.asterisk( normal.getValueRead()[1]); normalsPtr.plusPlus();
+        normalsPtr.asterisk( normal.getValueRead()[2]); normalsPtr.plusPlus();
       }
       if (doTextures) {
         final SbVec2f texCoord = texCoords.get(index);
-        texCoordsPtr.asterisk( texCoord.getValue()[0]); texCoordsPtr.plusPlus();
-        texCoordsPtr.asterisk( texCoord.getValue()[1]); texCoordsPtr.plusPlus();
+        texCoordsPtr.asterisk( texCoord.getValueRead()[0]); texCoordsPtr.plusPlus();
+        texCoordsPtr.asterisk( texCoord.getValueRead()[1]); texCoordsPtr.plusPlus();
       }
     }
 
@@ -1725,9 +1726,9 @@ public class SoCone extends SoShape {
   // Substituting the intersection point "I" into the equation of
   // the cone gives us a quadratic, whose a, b, and c coefficients
   // are as follows
-  a =  dir.getValue()[0] * dir.getValue()[0] - dir.getValue()[1] * dir.getValue()[1] + dir.getValue()[2] * dir.getValue()[2];
-  b = (pos.getValue()[0] * dir.getValue()[0] - pos.getValue()[1] * dir.getValue()[1] + pos.getValue()[2] * dir.getValue()[2]) * 2.0f;
-  c =  pos.getValue()[0] * pos.getValue()[0] - pos.getValue()[1] * pos.getValue()[1] + pos.getValue()[2] * pos.getValue()[2];
+  a =  dir.getValueRead()[0] * dir.getValueRead()[0] - dir.getValueRead()[1] * dir.getValueRead()[1] + dir.getValueRead()[2] * dir.getValueRead()[2];
+  b = (pos.getValueRead()[0] * dir.getValueRead()[0] - pos.getValueRead()[1] * dir.getValueRead()[1] + pos.getValueRead()[2] * dir.getValueRead()[2]) * 2.0f;
+  c =  pos.getValueRead()[0] * pos.getValueRead()[0] - pos.getValueRead()[1] * pos.getValueRead()[1] + pos.getValueRead()[2] * pos.getValueRead()[2];
 
   // If the discriminant of the quadratic is negative, there's no
   // intersection

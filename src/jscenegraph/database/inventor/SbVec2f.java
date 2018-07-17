@@ -72,6 +72,7 @@ package jscenegraph.database.inventor;
 
 import java.util.function.DoubleConsumer;
 
+import jscenegraph.port.FloatArray;
 import jscenegraph.port.Mutable;
 
 
@@ -95,32 +96,55 @@ SbVec3f, SbVec4f, SbVec2s, SbRotation
  *
  */
 public class SbVec2f implements Mutable {
-	protected final float[] vec = new float[2];
+	protected final float[] vec;
+	protected int indice;
 
 	// Default constructor.
 	public SbVec2f() {
-
+		vec = new float[2];
+		indice = 0;
 	}
 
 	// Constructor given vector components.
 	public SbVec2f(float[] v) {
+		vec = new float[2];
+		indice = 0;
 		 setValue(v);
 	}
 
 	// Constructor given vector components.
 	public SbVec2f(float x, float y) {
+		vec = new float[2]; 		
+		indice = 0;
 		 setValue(x, y);
 	}
 
 	// java port
 	public SbVec2f(final SbVec2f other) {
+		vec = new float[2];
+		indice = 0;
 		setValue(other.vec);
+	}
+	
+	/**
+	 * Internal contructor
+	 * @param array
+	 * @param indice
+	 */
+	public SbVec2f(float[] array, int indice) {
+		vec = array;
+		this.indice = indice;
+	}
+	
+	public SbVec2f(FloatArray vpCoords, int i) {
+		vec = vpCoords.getValues();
+		indice = vpCoords.getStart()+2*i;
 	}
 
 	// Sets the vector components.
 	public SbVec2f setValue(float[] v) {
-	     vec[0] = v[0];
-	     vec[1] = v[1];
+	     s(0, v[0]);
+	     s(1, v[1]);
 
 	     return (this);
 	}
@@ -128,23 +152,52 @@ public class SbVec2f implements Mutable {
 	// Sets the vector components.
 	public SbVec2f setValue(float x, float y) {
 
-		  vec[0] = x;
-		    vec[1] = y;
+		  s(0, x);
+		    s(1, y);
 
 		    return this;
 	}
 
     //! Returns vector components.
-    public float[] getValue() {
-    	return vec;
+    public float[] getValueRead() {
+    	float[] vecRead = new float[2];
+    	vecRead[0] = g(0); 
+    	vecRead[1] = g(1); 
+    	return vecRead; 
     }
 
+	/**
+	 * Internal method
+	 * @param i
+	 * @return
+	 */
+	protected float g(int i) {
+		return vec[indice+i];
+	}
+	
+	/**
+	 * Internal method
+	 * @param i
+	 * @param v
+	 */
+	protected void s(int i, float v) {
+		vec[indice+i] = v;
+	}
+	    
+    /**
+     * for internal use
+     * @return
+     */
+    protected final float[] getValueRef() {
+    	return vec; 
+    }
+    
 	public float operator_square_bracket(int i) {
-		return vec[i];
+		return g(i);
 	}
 
 	public void operator_square_bracket(int i, float value) {
-		vec[i] = value;
+		s(i, value);
 	}
 
 
@@ -154,7 +207,7 @@ public class SbVec2f implements Mutable {
 
 	public SbVec2f operator_minus()
 	{
-	    return new SbVec2f(-vec[0], -vec[1]);
+	    return new SbVec2f(-g(0), -g(1));
 	}
 
 //
@@ -165,8 +218,8 @@ public SbVec2f
 operator_minus(final SbVec2f v2)
 {
 	final SbVec2f v1 = this;
-    return new SbVec2f(v1.vec[0] - v2.vec[0],
-                  v1.vec[1] - v2.vec[1]);
+    return new SbVec2f(v1.g(0) - v2.g(0),
+                  v1.g(1) - v2.g(1));
 }
 
 
@@ -182,8 +235,8 @@ operator_minus(final SbVec2f v2)
    operator_equal_equal(final SbVec2f v2)
    {
 	  final SbVec2f v1 = this;
-       return (v1.vec[0] == v2.vec[0] &&
-               v1.vec[1] == v2.vec[1]);
+       return (v1.g(0) == v2.g(0) &&
+               v1.g(1) == v2.g(1));
    }
 
 
@@ -197,8 +250,8 @@ operator_minus(final SbVec2f v2)
 
 public SbVec2f operator_add_equal(final SbVec2f u)
 {
-    vec[0] += u.vec[0];
-    vec[1] += u.vec[1];
+    s(0, g(0)+ u.g(0));
+    s(1, g(1)+ u.g(1));
 
     return this;
 }
@@ -210,7 +263,7 @@ public SbVec2f operator_add_equal(final SbVec2f u)
 
 public float dot(final SbVec2f v)
 {
-    return vec[0] * v.vec[0] + vec[1] * v.vec[1];
+    return g(0) * v.g(0) + g(1) * v.g(1);
 }
 
 
@@ -221,8 +274,8 @@ public float dot(final SbVec2f v)
     public SbVec2f
     operator_mul_equal(float d)
 {
-    vec[0] *= d;
-    vec[1] *= d;
+    s(0, g(0)* d);
+    s(1, g(1)* d);
 
     return this;
 }
@@ -236,7 +289,7 @@ public SbVec2f
 operator_mul(float d)
 {
 	final SbVec2f v = this;
-    return new SbVec2f(v.vec[0] * d, v.vec[1] * d);
+    return new SbVec2f(v.g(0) * d, v.g(1) * d);
 }
 
 //
@@ -247,8 +300,8 @@ public SbVec2f
 operator_add( final SbVec2f v2)
 {
 	final SbVec2f v1 = this;
-    return new SbVec2f(v1.vec[0] + v2.vec[0],
-                  v1.vec[1] + v2.vec[1]);
+    return new SbVec2f(v1.g(0) + v2.g(0),
+                  v1.g(1) + v2.g(1));
 }
 
 
@@ -276,7 +329,7 @@ public float normalize()
 
 public float length()
 {
-    return (float)Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+    return (float)Math.sqrt(g(0) * g(0) + g(1) * g(1));
 }
 
 
@@ -284,8 +337,8 @@ public float length()
 	@Override
 	public void copyFrom(Object other) {
 		SbVec2f otherVec2f = (SbVec2f)other;
-		vec[0] = otherVec2f.vec[0];
-		vec[1] = otherVec2f.vec[1];
+		s(0, otherVec2f.g(0));
+		s(1, otherVec2f.g(1));
 	}
 
 	// java port
@@ -312,17 +365,17 @@ public float length()
 	 */
 	public DoubleConsumer[] getRef() {
 		DoubleConsumer[] ref = new DoubleConsumer[2];
-		ref[0] = value -> vec[0] = (float)value;
-		ref[1] = value -> vec[1] = (float)value;
+		ref[0] = value -> s(0, (float)value);
+		ref[1] = value -> s(1, (float)value);
 		return ref;
 	}
 
 	public float getX() { // java port
-		return vec[0];
+		return g(0);
 	}
 	
 	public float getY() { // java port
-		return vec[1];
+		return g(1);
 	}
 
 	/**
@@ -330,7 +383,7 @@ public float length()
 	 * @param x
 	 */
 	public void setX(float x) {
-		vec[0] = x;
+		s(0, x);
 	}
 
 	/**
@@ -338,7 +391,7 @@ public float length()
 	 * @param y
 	 */
 	public void setY(float y) {
-		vec[1] = y;
+		s(1, y);
 	}
  }
 

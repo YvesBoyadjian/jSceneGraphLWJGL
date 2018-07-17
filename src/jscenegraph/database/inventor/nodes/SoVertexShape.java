@@ -94,6 +94,7 @@ import jscenegraph.database.inventor.misc.SoNotList;
 import jscenegraph.database.inventor.misc.SoState;
 import jscenegraph.mevis.inventor.elements.SoGLVBOElement;
 import jscenegraph.mevis.inventor.misc.SoVBO;
+import jscenegraph.port.SbVec3fArray;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +283,7 @@ generateDefaultNormals(SoState state, SoNormalBundle normalBundle)
 
 protected void
 setNormalCache(SoState state,
-                              int numNormals, final SbVec3f[] normals)
+                              int numNormals, final SbVec3fArray normals)
 //
 ////////////////////////////////////////////////////////////////////////
 {
@@ -532,7 +533,7 @@ protected boolean beginVertexArrayRendering( SoGLRenderAction action )
 	    if (useVertexAttributes) {
 	        // we need to send the single color on the correct vertex attribute...
 	        SbColor color = SoGLLazyElement.getDiffuse(state, 0);
-	        gl2.glVertexAttrib4fv(SoLazyElement.VertexAttribs.ATTRIB_COLOR.getValue(), color.getValue(),0);
+	        gl2.glVertexAttrib4fv(SoLazyElement.VertexAttribs.ATTRIB_COLOR.getValue(), color.getValueRead(),0); //FIXME
 	      }
 	    }
   boolean perVertexTexCoords = vpCache.getNumTexCoords()>0;
@@ -625,7 +626,7 @@ public SoVertexProperty getVertexProperty()
 public static void
 getVertexData(SoState state,
                              final SoCoordinateElement [] coords,
-                             final SbVec3f [][] normals,
+                             final SbVec3fArray [] normals,
                              boolean neednormals)
 {
   coords[0] = SoCoordinateElement.getInstance(state);
